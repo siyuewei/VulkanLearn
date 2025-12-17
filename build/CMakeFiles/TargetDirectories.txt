@@ -1,0 +1,13 @@
+D:/0-wsy/code/VulkanLearn/build/CMakeFiles/VulkanLearn.dir
+D:/0-wsy/code/VulkanLearn/build/CMakeFiles/INSTALL.dir
+D:/0-wsy/code/VulkanLearn/build/CMakeFiles/ALL_BUILD.dir
+D:/0-wsy/code/VulkanLearn/build/CMakeFiles/ZERO_CHECK.dir
+D:/0-wsy/code/VulkanLearn/build/_deps/glfw-build/CMakeFiles/uninstall.dir
+D:/0-wsy/code/VulkanLearn/build/_deps/glfw-build/CMakeFiles/INSTALL.dir
+D:/0-wsy/code/VulkanLearn/build/_deps/glfw-build/CMakeFiles/ALL_BUILD.dir
+D:/0-wsy/code/VulkanLearn/build/_deps/glfw-build/src/CMakeFiles/update_mappings.dir
+D:/0-wsy/code/VulkanLearn/build/_deps/glfw-build/src/CMakeFiles/glfw.dir
+D:/0-wsy/code/VulkanLearn/build/_deps/glfw-build/src/CMakeFiles/INSTALL.dir
+D:/0-wsy/code/VulkanLearn/build/_deps/glm-build/CMakeFiles/INSTALL.dir
+D:/0-wsy/code/VulkanLearn/build/_deps/glm-build/CMakeFiles/ALL_BUILD.dir
+D:/0-wsy/code/VulkanLearn/build/_deps/glm-build/glm/CMakeFiles/INSTALL.dir

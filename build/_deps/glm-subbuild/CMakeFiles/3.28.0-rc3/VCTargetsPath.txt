@@ -1,0 +1,1 @@
+D:/software/code/vstudio/Microsoft Visual Studio/2022/MSBuild/Microsoft/VC/v170

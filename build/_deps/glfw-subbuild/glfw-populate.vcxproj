@@ -1,0 +1,301 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9EEF9AE6-6FB5-39F6-8B45-42AADD02C03D}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>glfw-populate</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\CMakeFiles\e6620dbad6d150cc7a5d51048c4ef497\glfw-populate-mkdir.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating directories for 'glfw-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+D:\software\tool\Cmake\bin\cmake.exe -Dcfgdir=/Debug -P D:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild/glfw-populate-prefix/tmp/glfw-populate-mkdirs.cmake
+if %errorlevel% neq 0 goto :cmEnd
+D:\software\tool\Cmake\bin\cmake.exe -E touch D:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/Debug/glfw-populate-mkdir
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-mkdir</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\CMakeFiles\e6620dbad6d150cc7a5d51048c4ef497\glfw-populate-download.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing download step (git clone) for 'glfw-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd D:\0-wsy\code\VulkanLearn\build\_deps
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\software\tool\Cmake\bin\cmake.exe -P D:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild/glfw-populate-prefix/tmp/glfw-populate-gitclone.cmake
+if %errorlevel% neq 0 goto :cmEnd
+D:\software\tool\Cmake\bin\cmake.exe -E touch D:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/Debug/glfw-populate-download
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\glfw-populate-gitinfo.txt;D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-mkdir;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-download</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\CMakeFiles\e6620dbad6d150cc7a5d51048c4ef497\glfw-populate-update.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing update step for 'glfw-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd D:\0-wsy\code\VulkanLearn\build\_deps\glfw-src
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\software\tool\Cmake\bin\cmake.exe -Dcan_fetch=YES -P D:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild/glfw-populate-prefix/tmp/glfw-populate-gitupdate.cmake
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\tmp\glfw-populate-gitupdate.cmake;D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\glfw-populate-update-info.txt;D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-download;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-update</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</VerifyInputsAndOutputsExist>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\CMakeFiles\e6620dbad6d150cc7a5d51048c4ef497\glfw-populate-patch.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">No patch step for 'glfw-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+D:\software\tool\Cmake\bin\cmake.exe -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+D:\software\tool\Cmake\bin\cmake.exe -E touch D:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/Debug/glfw-populate-patch
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\glfw-populate-patch-info.txt;D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-update;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-patch</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</VerifyInputsAndOutputsExist>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\CMakeFiles\e6620dbad6d150cc7a5d51048c4ef497\glfw-populate-configure.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">No configure step for 'glfw-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd D:\0-wsy\code\VulkanLearn\build\_deps\glfw-build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\software\tool\Cmake\bin\cmake.exe -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+D:\software\tool\Cmake\bin\cmake.exe -E touch D:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/Debug/glfw-populate-configure
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\tmp\glfw-populate-cfgcmd.txt;D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-patch;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-configure</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\CMakeFiles\e6620dbad6d150cc7a5d51048c4ef497\glfw-populate-build.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">No build step for 'glfw-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd D:\0-wsy\code\VulkanLearn\build\_deps\glfw-build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\software\tool\Cmake\bin\cmake.exe -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+D:\software\tool\Cmake\bin\cmake.exe -E touch D:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/Debug/glfw-populate-build
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-configure;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-build</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\CMakeFiles\e6620dbad6d150cc7a5d51048c4ef497\glfw-populate-install.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">No install step for 'glfw-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd D:\0-wsy\code\VulkanLearn\build\_deps\glfw-build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\software\tool\Cmake\bin\cmake.exe -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+D:\software\tool\Cmake\bin\cmake.exe -E touch D:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/Debug/glfw-populate-install
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-build;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-install</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\CMakeFiles\e6620dbad6d150cc7a5d51048c4ef497\glfw-populate-test.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">No test step for 'glfw-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd D:\0-wsy\code\VulkanLearn\build\_deps\glfw-build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\software\tool\Cmake\bin\cmake.exe -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+D:\software\tool\Cmake\bin\cmake.exe -E touch D:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/Debug/glfw-populate-test
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-install;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-test</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\CMakeFiles\9a8482b7b6becbf84923d7d66bf71409\glfw-populate-complete.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Completed 'glfw-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+D:\software\tool\Cmake\bin\cmake.exe -E make_directory D:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild/CMakeFiles/Debug
+if %errorlevel% neq 0 goto :cmEnd
+D:\software\tool\Cmake\bin\cmake.exe -E touch D:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild/CMakeFiles/Debug/glfw-populate-complete
+if %errorlevel% neq 0 goto :cmEnd
+D:\software\tool\Cmake\bin\cmake.exe -E touch D:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/Debug/glfw-populate-done
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-install;D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-mkdir;D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-download;D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-update;D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-patch;D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-configure;D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-build;D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\src\glfw-populate-stamp\Debug\glfw-populate-test;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\CMakeFiles\Debug\glfw-populate-complete</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</VerifyInputsAndOutputsExist>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\CMakeFiles\e4f7de926b91f54c974b13991c780e21\glfw-populate.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\CMakeFiles\Debug\glfw-populate-complete;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\CMakeFiles\glfw-populate</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</VerifyInputsAndOutputsExist>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+D:\software\tool\Cmake\bin\cmake.exe -SD:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild -BD:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild --check-stamp-file D:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\CMakeFiles\3.28.0-rc3\CMakeSystem.cmake;D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\glfw-populate-prefix\tmp\glfw-populate-mkdirs.cmake;D:\software\tool\Cmake\share\cmake-3.28\Modules\CMakeGenericSystem.cmake;D:\software\tool\Cmake\share\cmake-3.28\Modules\CMakeInitializeConfigs.cmake;D:\software\tool\Cmake\share\cmake-3.28\Modules\CMakeSystemSpecificInformation.cmake;D:\software\tool\Cmake\share\cmake-3.28\Modules\CMakeSystemSpecificInitialize.cmake;D:\software\tool\Cmake\share\cmake-3.28\Modules\ExternalProject.cmake;D:\software\tool\Cmake\share\cmake-3.28\Modules\ExternalProject\PatchInfo.txt.in;D:\software\tool\Cmake\share\cmake-3.28\Modules\ExternalProject\RepositoryInfo.txt.in;D:\software\tool\Cmake\share\cmake-3.28\Modules\ExternalProject\UpdateInfo.txt.in;D:\software\tool\Cmake\share\cmake-3.28\Modules\ExternalProject\cfgcmd.txt.in;D:\software\tool\Cmake\share\cmake-3.28\Modules\ExternalProject\gitclone.cmake.in;D:\software\tool\Cmake\share\cmake-3.28\Modules\ExternalProject\gitupdate.cmake.in;D:\software\tool\Cmake\share\cmake-3.28\Modules\ExternalProject\mkdirs.cmake.in;D:\software\tool\Cmake\share\cmake-3.28\Modules\ExternalProject\shared_internal_commands.cmake;D:\software\tool\Cmake\share\cmake-3.28\Modules\Platform\Windows-Initialize.cmake;D:\software\tool\Cmake\share\cmake-3.28\Modules\Platform\Windows.cmake;D:\software\tool\Cmake\share\cmake-3.28\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\CMakeFiles\glfw-populate">
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\0-wsy\code\VulkanLearn\build\_deps\glfw-subbuild\ZERO_CHECK.vcxproj">
+      <Project>{935F1140-506E-3135-B493-9F300FE0B2E1}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

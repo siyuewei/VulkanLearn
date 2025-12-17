@@ -1,0 +1,10 @@
+^D:\0-WSY\CODE\VULKANLEARN\BUILD\_DEPS\GLFW-SUBBUILD\CMAKEFILES\E4F7DE926B91F54C974B13991C780E21\GENERATE.STAMP.RULE
+setlocal
+D:\software\tool\Cmake\bin\cmake.exe -SD:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild -BD:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/0-wsy/code/VulkanLearn/build/_deps/glfw-subbuild/glfw-populate.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

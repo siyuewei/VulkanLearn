@@ -1,0 +1,407 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/CMakeDetermineSystem.cmake:233 (message)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      The system is: Windows - 10.0.26100 - AMD64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      閫傜敤浜?.NET Framework MSBuild 鐗堟湰 17.14.19+164abd434
+      鐢熸垚鍚姩鏃堕棿涓?2025/12/17 0:11:26銆?
+      
+      鑺傜偣 1 涓婄殑椤圭洰鈥淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\3.28.0-rc3\\CompilerIdC\\CompilerIdC.vcxproj鈥?榛樿鐩爣)銆?
+      PrepareForBuild:
+        姝ｅ湪鍒涘缓鐩綍鈥淒ebug\\鈥濄€?
+        Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+        姝ｅ湪鍒涘缓鐩綍鈥淒ebug\\CompilerIdC.tlog\\鈥濄€?
+      InitializeBuildStatus:
+        姝ｅ湪鍒涘缓鈥淒ebug\\CompilerIdC.tlog\\unsuccessfulbuild鈥濓紝鍥犱负宸叉寚瀹氣€淎lwaysCreate鈥濄€?
+        姝ｅ湪瀵光€淒ebug\\CompilerIdC.tlog\\unsuccessfulbuild鈥濇墽琛?Touch 浠诲姟銆?
+      ClCompile:
+        D:\\software\\code\\vstudio\\Microsoft Visual Studio\\2022\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TC /FC /errorReport:queue CMakeCCompilerId.c
+        CMakeCCompilerId.c
+      Link:
+        D:\\software\\code\\vstudio\\Microsoft Visual Studio\\2022\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdC.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdC.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdC.lib" /MACHINE:X64 Debug\\CMakeCCompilerId.obj
+        CompilerIdC.vcxproj -> D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\3.28.0-rc3\\CompilerIdC\\CompilerIdC.exe
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_C_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_C_COMPILER=D:\\software\\code\\vstudio\\Microsoft Visual Studio\\2022\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe
+      FinalizeBuildStatus:
+        姝ｅ湪鍒犻櫎鏂囦欢鈥淒ebug\\CompilerIdC.tlog\\unsuccessfulbuild鈥濄€?
+        姝ｅ湪瀵光€淒ebug\\CompilerIdC.tlog\\CompilerIdC.lastbuildstate鈥濇墽琛?Touch 浠诲姟銆?
+      宸插畬鎴愮敓鎴愰」鐩€淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\3.28.0-rc3\\CompilerIdC\\CompilerIdC.vcxproj鈥?榛樿鐩爣)鐨勬搷浣溿€?
+      
+      宸叉垚鍔熺敓鎴愩€?
+          0 涓鍛?
+          0 涓敊璇?
+      
+      宸茬敤鏃堕棿 00:00:00.84
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.vcxproj"
+      
+      The C compiler identification is MSVC, found in:
+        D:/0-wsy/code/VulkanLearn/build/CMakeFiles/3.28.0-rc3/CompilerIdC/CompilerIdC.exe
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      閫傜敤浜?.NET Framework MSBuild 鐗堟湰 17.14.19+164abd434
+      鐢熸垚鍚姩鏃堕棿涓?2025/12/17 0:11:27銆?
+      
+      鑺傜偣 1 涓婄殑椤圭洰鈥淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\3.28.0-rc3\\CompilerIdCXX\\CompilerIdCXX.vcxproj鈥?榛樿鐩爣)銆?
+      PrepareForBuild:
+        姝ｅ湪鍒涘缓鐩綍鈥淒ebug\\鈥濄€?
+        Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+        姝ｅ湪鍒涘缓鐩綍鈥淒ebug\\CompilerIdCXX.tlog\\鈥濄€?
+      InitializeBuildStatus:
+        姝ｅ湪鍒涘缓鈥淒ebug\\CompilerIdCXX.tlog\\unsuccessfulbuild鈥濓紝鍥犱负宸叉寚瀹氣€淎lwaysCreate鈥濄€?
+        姝ｅ湪瀵光€淒ebug\\CompilerIdCXX.tlog\\unsuccessfulbuild鈥濇墽琛?Touch 浠诲姟銆?
+      ClCompile:
+        D:\\software\\code\\vstudio\\Microsoft Visual Studio\\2022\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
+        CMakeCXXCompilerId.cpp
+      Link:
+        D:\\software\\code\\vstudio\\Microsoft Visual Studio\\2022\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
+        CompilerIdCXX.vcxproj -> D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\3.28.0-rc3\\CompilerIdCXX\\CompilerIdCXX.exe
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_CXX_COMPILER=D:\\software\\code\\vstudio\\Microsoft Visual Studio\\2022\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe
+      FinalizeBuildStatus:
+        姝ｅ湪鍒犻櫎鏂囦欢鈥淒ebug\\CompilerIdCXX.tlog\\unsuccessfulbuild鈥濄€?
+        姝ｅ湪瀵光€淒ebug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate鈥濇墽琛?Touch 浠诲姟銆?
+      宸插畬鎴愮敓鎴愰」鐩€淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\3.28.0-rc3\\CompilerIdCXX\\CompilerIdCXX.vcxproj鈥?榛樿鐩爣)鐨勬搷浣溿€?
+      
+      宸叉垚鍔熺敓鎴愩€?
+          0 涓鍛?
+          0 涓敊璇?
+      
+      宸茬敤鏃堕棿 00:00:00.56
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
+      
+      The CXX compiler identification is MSVC, found in:
+        D:/0-wsy/code/VulkanLearn/build/CMakeFiles/3.28.0-rc3/CompilerIdCXX/CompilerIdCXX.exe
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-jnn8xh"
+      binary: "D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-jnn8xh"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-jnn8xh'
+        
+        Run Build Command(s): "D:/software/code/vstudio/Microsoft Visual Studio/2022/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_efef2.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        閫傜敤浜?.NET Framework MSBuild 鐗堟湰 17.14.19+164abd434
+        鐢熸垚鍚姩鏃堕棿涓?2025/12/17 0:11:28銆?
+        
+        鑺傜偣 1 涓婄殑椤圭洰鈥淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-jnn8xh\\cmTC_efef2.vcxproj鈥?榛樿鐩爣)銆?
+        PrepareForBuild:
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_efef2.dir\\Debug\\鈥濄€?
+          Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+          姝ｅ湪鍒涘缓鐩綍鈥淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-jnn8xh\\Debug\\鈥濄€?
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_efef2.dir\\Debug\\cmTC_efef2.tlog\\鈥濄€?
+        InitializeBuildStatus:
+          姝ｅ湪鍒涘缓鈥渃mTC_efef2.dir\\Debug\\cmTC_efef2.tlog\\unsuccessfulbuild鈥濓紝鍥犱负宸叉寚瀹氣€淎lwaysCreate鈥濄€?
+          姝ｅ湪瀵光€渃mTC_efef2.dir\\Debug\\cmTC_efef2.tlog\\unsuccessfulbuild鈥濇墽琛?Touch 浠诲姟銆?
+        ClCompile:
+          D:\\software\\code\\vstudio\\Microsoft Visual Studio\\2022\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_efef2.dir\\Debug\\\\" /Fd"cmTC_efef2.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TC /errorReport:queue "D:\\software\\tool\\Cmake\\share\\cmake-3.28\\Modules\\CMakeCCompilerABI.c"
+          Microsoft (R) C/C++ Optimizing Compiler Version 19.38.33145 for x64
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_efef2.dir\\Debug\\\\" /Fd"cmTC_efef2.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TC /errorReport:queue "D:\\software\\tool\\Cmake\\share\\cmake-3.28\\Modules\\CMakeCCompilerABI.c"
+          CMakeCCompilerABI.c
+        Link:
+          D:\\software\\code\\vstudio\\Microsoft Visual Studio\\2022\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-jnn8xh\\Debug\\cmTC_efef2.exe" /INCREMENTAL /ILK:"cmTC_efef2.dir\\Debug\\cmTC_efef2.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-jnn8xh/Debug/cmTC_efef2.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-jnn8xh/Debug/cmTC_efef2.lib" /MACHINE:X64  /machine:x64 cmTC_efef2.dir\\Debug\\CMakeCCompilerABI.obj
+          cmTC_efef2.vcxproj -> D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-jnn8xh\\Debug\\cmTC_efef2.exe
+        FinalizeBuildStatus:
+          姝ｅ湪鍒犻櫎鏂囦欢鈥渃mTC_efef2.dir\\Debug\\cmTC_efef2.tlog\\unsuccessfulbuild鈥濄€?
+          姝ｅ湪瀵光€渃mTC_efef2.dir\\Debug\\cmTC_efef2.tlog\\cmTC_efef2.lastbuildstate鈥濇墽琛?Touch 浠诲姟銆?
+        宸插畬鎴愮敓鎴愰」鐩€淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-jnn8xh\\cmTC_efef2.vcxproj鈥?榛樿鐩爣)鐨勬搷浣溿€?
+        
+        宸叉垚鍔熺敓鎴愩€?
+            0 涓鍛?
+            0 涓敊璇?
+        
+        宸茬敤鏃堕棿 00:00:00.58
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-qop24p"
+      binary: "D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-qop24p"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /GR /EHsc"
+      CMAKE_CXX_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-qop24p'
+        
+        Run Build Command(s): "D:/software/code/vstudio/Microsoft Visual Studio/2022/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_3af4e.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        閫傜敤浜?.NET Framework MSBuild 鐗堟湰 17.14.19+164abd434
+        鐢熸垚鍚姩鏃堕棿涓?2025/12/17 0:11:29銆?
+        
+        鑺傜偣 1 涓婄殑椤圭洰鈥淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-qop24p\\cmTC_3af4e.vcxproj鈥?榛樿鐩爣)銆?
+        PrepareForBuild:
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_3af4e.dir\\Debug\\鈥濄€?
+          Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+          姝ｅ湪鍒涘缓鐩綍鈥淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-qop24p\\Debug\\鈥濄€?
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_3af4e.dir\\Debug\\cmTC_3af4e.tlog\\鈥濄€?
+        InitializeBuildStatus:
+          姝ｅ湪鍒涘缓鈥渃mTC_3af4e.dir\\Debug\\cmTC_3af4e.tlog\\unsuccessfulbuild鈥濓紝鍥犱负宸叉寚瀹氣€淎lwaysCreate鈥濄€?
+          姝ｅ湪瀵光€渃mTC_3af4e.dir\\Debug\\cmTC_3af4e.tlog\\unsuccessfulbuild鈥濇墽琛?Touch 浠诲姟銆?
+        ClCompile:
+          D:\\software\\code\\vstudio\\Microsoft Visual Studio\\2022\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_3af4e.dir\\Debug\\\\" /Fd"cmTC_3af4e.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\software\\tool\\Cmake\\share\\cmake-3.28\\Modules\\CMakeCXXCompilerABI.cpp"
+          Microsoft (R) C/C++ Optimizing Compiler Version 19.38.33145 for x64
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_3af4e.dir\\Debug\\\\" /Fd"cmTC_3af4e.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\software\\tool\\Cmake\\share\\cmake-3.28\\Modules\\CMakeCXXCompilerABI.cpp"
+          CMakeCXXCompilerABI.cpp
+        Link:
+          D:\\software\\code\\vstudio\\Microsoft Visual Studio\\2022\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-qop24p\\Debug\\cmTC_3af4e.exe" /INCREMENTAL /ILK:"cmTC_3af4e.dir\\Debug\\cmTC_3af4e.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-qop24p/Debug/cmTC_3af4e.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-qop24p/Debug/cmTC_3af4e.lib" /MACHINE:X64  /machine:x64 cmTC_3af4e.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_3af4e.vcxproj -> D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-qop24p\\Debug\\cmTC_3af4e.exe
+        FinalizeBuildStatus:
+          姝ｅ湪鍒犻櫎鏂囦欢鈥渃mTC_3af4e.dir\\Debug\\cmTC_3af4e.tlog\\unsuccessfulbuild鈥濄€?
+          姝ｅ湪瀵光€渃mTC_3af4e.dir\\Debug\\cmTC_3af4e.tlog\\cmTC_3af4e.lastbuildstate鈥濇墽琛?Touch 浠诲姟銆?
+        宸插畬鎴愮敓鎴愰」鐩€淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-qop24p\\cmTC_3af4e.vcxproj鈥?榛樿鐩爣)鐨勬搷浣溿€?
+        
+        宸叉垚鍔熺敓鎴愩€?
+            0 涓鍛?
+            0 涓敊璇?
+        
+        宸茬敤鏃堕棿 00:00:00.56
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/FindThreads.cmake:97 (CHECK_C_SOURCE_COMPILES)"
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/FindThreads.cmake:163 (_threads_check_libc)"
+      - "build/_deps/glfw-src/CMakeLists.txt:62 (find_package)"
+    checks:
+      - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
+    directories:
+      source: "D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-eqtla0"
+      binary: "D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-eqtla0"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "D:/0-wsy/code/VulkanLearn/build/_deps/glfw-src/CMake/modules"
+    buildResult:
+      variable: "CMAKE_HAVE_LIBC_PTHREAD"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-eqtla0'
+        
+        Run Build Command(s): "D:/software/code/vstudio/Microsoft Visual Studio/2022/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_800c2.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        閫傜敤浜?.NET Framework MSBuild 鐗堟湰 17.14.19+164abd434
+        鐢熸垚鍚姩鏃堕棿涓?2025/12/17 0:11:31銆?
+        
+        鑺傜偣 1 涓婄殑椤圭洰鈥淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-eqtla0\\cmTC_800c2.vcxproj鈥?榛樿鐩爣)銆?
+        PrepareForBuild:
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_800c2.dir\\Debug\\鈥濄€?
+          Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+          姝ｅ湪鍒涘缓鐩綍鈥淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-eqtla0\\Debug\\鈥濄€?
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_800c2.dir\\Debug\\cmTC_800c2.tlog\\鈥濄€?
+        InitializeBuildStatus:
+          姝ｅ湪鍒涘缓鈥渃mTC_800c2.dir\\Debug\\cmTC_800c2.tlog\\unsuccessfulbuild鈥濓紝鍥犱负宸叉寚瀹氣€淎lwaysCreate鈥濄€?
+          姝ｅ湪瀵光€渃mTC_800c2.dir\\Debug\\cmTC_800c2.tlog\\unsuccessfulbuild鈥濇墽琛?Touch 浠诲姟銆?
+        ClCompile:
+          D:\\software\\code\\vstudio\\Microsoft Visual Studio\\2022\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_800c2.dir\\Debug\\\\" /Fd"cmTC_800c2.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TC /errorReport:queue "D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-eqtla0\\src.c"
+          Microsoft (R) C/C++ Optimizing Compiler Version 19.38.33145 for x64
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_800c2.dir\\Debug\\\\" /Fd"cmTC_800c2.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TC /errorReport:queue "D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-eqtla0\\src.c"
+          src.c
+        D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-eqtla0\\src.c(1,10): error C1083: Cannot open include file: 'pthread.h': No such file or directory [D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-eqtla0\\cmTC_800c2.vcxproj]
+        宸插畬鎴愮敓鎴愰」鐩€淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-eqtla0\\cmTC_800c2.vcxproj鈥?榛樿鐩爣)鐨勬搷浣?- 澶辫触銆?
+        
+        鐢熸垚澶辫触銆?
+        
+        鈥淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-eqtla0\\cmTC_800c2.vcxproj鈥?榛樿鐩爣) (1) ->
+        (ClCompile 鐩爣) -> 
+          D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-eqtla0\\src.c(1,10): error C1083: Cannot open include file: 'pthread.h': No such file or directory [D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-eqtla0\\cmTC_800c2.vcxproj]
+        
+            0 涓鍛?
+            1 涓敊璇?
+        
+        宸茬敤鏃堕棿 00:00:00.36
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/CheckLibraryExists.cmake:69 (try_compile)"
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/FindThreads.cmake:112 (CHECK_LIBRARY_EXISTS)"
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/FindThreads.cmake:175 (_threads_check_lib)"
+      - "build/_deps/glfw-src/CMakeLists.txt:62 (find_package)"
+    checks:
+      - "Looking for pthread_create in pthreads"
+    directories:
+      source: "D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-x7ce88"
+      binary: "D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-x7ce88"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "D:/0-wsy/code/VulkanLearn/build/_deps/glfw-src/CMake/modules"
+    buildResult:
+      variable: "CMAKE_HAVE_PTHREADS_CREATE"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-x7ce88'
+        
+        Run Build Command(s): "D:/software/code/vstudio/Microsoft Visual Studio/2022/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_7cd96.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        閫傜敤浜?.NET Framework MSBuild 鐗堟湰 17.14.19+164abd434
+        鐢熸垚鍚姩鏃堕棿涓?2025/12/17 0:11:31銆?
+        
+        鑺傜偣 1 涓婄殑椤圭洰鈥淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-x7ce88\\cmTC_7cd96.vcxproj鈥?榛樿鐩爣)銆?
+        PrepareForBuild:
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_7cd96.dir\\Debug\\鈥濄€?
+          Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+          姝ｅ湪鍒涘缓鐩綍鈥淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-x7ce88\\Debug\\鈥濄€?
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_7cd96.dir\\Debug\\cmTC_7cd96.tlog\\鈥濄€?
+        InitializeBuildStatus:
+          姝ｅ湪鍒涘缓鈥渃mTC_7cd96.dir\\Debug\\cmTC_7cd96.tlog\\unsuccessfulbuild鈥濓紝鍥犱负宸叉寚瀹氣€淎lwaysCreate鈥濄€?
+          姝ｅ湪瀵光€渃mTC_7cd96.dir\\Debug\\cmTC_7cd96.tlog\\unsuccessfulbuild鈥濇墽琛?Touch 浠诲姟銆?
+        ClCompile:
+          D:\\software\\code\\vstudio\\Microsoft Visual Studio\\2022\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_7cd96.dir\\Debug\\\\" /Fd"cmTC_7cd96.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TC /errorReport:queue "D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-x7ce88\\CheckFunctionExists.c"
+          Microsoft (R) C/C++ Optimizing Compiler Version 19.38.33145 for x64
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_7cd96.dir\\Debug\\\\" /Fd"cmTC_7cd96.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TC /errorReport:queue "D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-x7ce88\\CheckFunctionExists.c"
+          CheckFunctionExists.c
+        Link:
+          D:\\software\\code\\vstudio\\Microsoft Visual Studio\\2022\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-x7ce88\\Debug\\cmTC_7cd96.exe" /INCREMENTAL /ILK:"cmTC_7cd96.dir\\Debug\\cmTC_7cd96.ilk" /NOLOGO pthreads.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-x7ce88/Debug/cmTC_7cd96.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-x7ce88/Debug/cmTC_7cd96.lib" /MACHINE:X64  /machine:x64 cmTC_7cd96.dir\\Debug\\CheckFunctionExists.obj
+        LINK : fatal error LNK1104: cannot open file 'pthreads.lib' [D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-x7ce88\\cmTC_7cd96.vcxproj]
+        宸插畬鎴愮敓鎴愰」鐩€淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-x7ce88\\cmTC_7cd96.vcxproj鈥?榛樿鐩爣)鐨勬搷浣?- 澶辫触銆?
+        
+        鐢熸垚澶辫触銆?
+        
+        鈥淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-x7ce88\\cmTC_7cd96.vcxproj鈥?榛樿鐩爣) (1) ->
+        (Link 鐩爣) -> 
+          LINK : fatal error LNK1104: cannot open file 'pthreads.lib' [D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-x7ce88\\cmTC_7cd96.vcxproj]
+        
+            0 涓鍛?
+            1 涓敊璇?
+        
+        宸茬敤鏃堕棿 00:00:00.53
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/CheckLibraryExists.cmake:69 (try_compile)"
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/FindThreads.cmake:112 (CHECK_LIBRARY_EXISTS)"
+      - "D:/software/tool/Cmake/share/cmake-3.28/Modules/FindThreads.cmake:176 (_threads_check_lib)"
+      - "build/_deps/glfw-src/CMakeLists.txt:62 (find_package)"
+    checks:
+      - "Looking for pthread_create in pthread"
+    directories:
+      source: "D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-jhpwqi"
+      binary: "D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-jhpwqi"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "D:/0-wsy/code/VulkanLearn/build/_deps/glfw-src/CMake/modules"
+    buildResult:
+      variable: "CMAKE_HAVE_PTHREAD_CREATE"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-jhpwqi'
+        
+        Run Build Command(s): "D:/software/code/vstudio/Microsoft Visual Studio/2022/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_14de2.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        閫傜敤浜?.NET Framework MSBuild 鐗堟湰 17.14.19+164abd434
+        鐢熸垚鍚姩鏃堕棿涓?2025/12/17 0:11:32銆?
+        
+        鑺傜偣 1 涓婄殑椤圭洰鈥淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-jhpwqi\\cmTC_14de2.vcxproj鈥?榛樿鐩爣)銆?
+        PrepareForBuild:
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_14de2.dir\\Debug\\鈥濄€?
+          Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+          姝ｅ湪鍒涘缓鐩綍鈥淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-jhpwqi\\Debug\\鈥濄€?
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_14de2.dir\\Debug\\cmTC_14de2.tlog\\鈥濄€?
+        InitializeBuildStatus:
+          姝ｅ湪鍒涘缓鈥渃mTC_14de2.dir\\Debug\\cmTC_14de2.tlog\\unsuccessfulbuild鈥濓紝鍥犱负宸叉寚瀹氣€淎lwaysCreate鈥濄€?
+          姝ｅ湪瀵光€渃mTC_14de2.dir\\Debug\\cmTC_14de2.tlog\\unsuccessfulbuild鈥濇墽琛?Touch 浠诲姟銆?
+        ClCompile:
+          D:\\software\\code\\vstudio\\Microsoft Visual Studio\\2022\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_14de2.dir\\Debug\\\\" /Fd"cmTC_14de2.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TC /errorReport:queue "D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-jhpwqi\\CheckFunctionExists.c"
+          Microsoft (R) C/C++ Optimizing Compiler Version 19.38.33145 for x64
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_14de2.dir\\Debug\\\\" /Fd"cmTC_14de2.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TC /errorReport:queue "D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-jhpwqi\\CheckFunctionExists.c"
+          CheckFunctionExists.c
+        Link:
+          D:\\software\\code\\vstudio\\Microsoft Visual Studio\\2022\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-jhpwqi\\Debug\\cmTC_14de2.exe" /INCREMENTAL /ILK:"cmTC_14de2.dir\\Debug\\cmTC_14de2.ilk" /NOLOGO pthread.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-jhpwqi/Debug/cmTC_14de2.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/0-wsy/code/VulkanLearn/build/CMakeFiles/CMakeScratch/TryCompile-jhpwqi/Debug/cmTC_14de2.lib" /MACHINE:X64  /machine:x64 cmTC_14de2.dir\\Debug\\CheckFunctionExists.obj
+        LINK : fatal error LNK1104: cannot open file 'pthread.lib' [D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-jhpwqi\\cmTC_14de2.vcxproj]
+        宸插畬鎴愮敓鎴愰」鐩€淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-jhpwqi\\cmTC_14de2.vcxproj鈥?榛樿鐩爣)鐨勬搷浣?- 澶辫触銆?
+        
+        鐢熸垚澶辫触銆?
+        
+        鈥淒:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-jhpwqi\\cmTC_14de2.vcxproj鈥?榛樿鐩爣) (1) ->
+        (Link 鐩爣) -> 
+          LINK : fatal error LNK1104: cannot open file 'pthread.lib' [D:\\0-wsy\\code\\VulkanLearn\\build\\CMakeFiles\\CMakeScratch\\TryCompile-jhpwqi\\cmTC_14de2.vcxproj]
+        
+            0 涓鍛?
+            1 涓敊璇?
+        
+        宸茬敤鏃堕棿 00:00:00.43
+        
+      exitCode: 1
+...
