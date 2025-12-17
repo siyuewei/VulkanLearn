@@ -53,6 +53,11 @@ private:
 
     VkCommandPool commandPool;                     // 命令池
     VkCommandBuffer commandBuffer;               // 命令缓冲
+
+    VkSemaphore imageAvailableSemaphore; // 图像可用信号量
+    VkSemaphore renderFinishedSemaphore;  // 渲染完成信号量
+    VkFence inFlightFence;            // 帧内同步栅栏
+
     // ==================================================
     // 2. 初始化流程 (分步骤实现)
     // ==================================================
@@ -82,6 +87,7 @@ private:
         createFramebuffers();
         createCommandPool();
         createCommandBuffer();
+        createSyncObjects();
     }
 
     // --- 步骤 2.1: 创建 Instance ---
@@ -409,7 +415,16 @@ private:
         pipelineInfo.pMultisampleState = &multisampling;
         pipelineInfo.pDepthStencilState = nullptr; //无深度模板缓冲
         pipelineInfo.pColorBlendState = &colorBlending;
-        pipelineInfo.pDynamicState = nullptr; //无动态状态
+
+        std::vector<VkDynamicState> dynamicStates = {
+            VK_DYNAMIC_STATE_VIEWPORT,
+            VK_DYNAMIC_STATE_SCISSOR
+        };
+        VkPipelineDynamicStateCreateInfo dynamicState{};
+        dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+        dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+        dynamicState.pDynamicStates = dynamicStates.data();
+        pipelineInfo.pDynamicState = &dynamicState;
 
         pipelineInfo.layout = pipelineLayout;
         pipelineInfo.renderPass = renderPass;
@@ -532,6 +547,23 @@ private:
         }
     }
 
+    // --- 步骤 2.12：创建同步对象 ---
+    void createSyncObjects() {
+        VkSemaphoreCreateInfo semaphoreInfo{};
+        semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+        VkFenceCreateInfo fenceInfo{};
+        fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+        fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT; // 初始状态为已信号
+
+        if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphore) != VK_SUCCESS ||
+            vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphore) != VK_SUCCESS ||
+            vkCreateFence(device, &fenceInfo, nullptr, &inFlightFence) != VK_SUCCESS) {
+            throw std::runtime_error("无法创建同步对象!");
+        }
+        std::cout << "同步对象创建成功!" << std::endl;
+    }
+
     // --- 辅助函数：查找队列族 ---
     int findQueueFamilies(VkPhysicalDevice device) {
         uint32_t queueFamilyCount = 0;
@@ -589,14 +621,78 @@ private:
         std::cout << "进入主循环..." << std::endl;
         while (!glfwWindowShouldClose(window)) {
             glfwPollEvents();
-            // drawFrame(); // 未来在这里画画
+            drawFrame();
         }
+
+        vkDeviceWaitIdle(device); // 等待设备空闲再退出
+    }
+
+    // ==================================================
+    // 3.5 核心绘制函数
+    // ==================================================
+    void drawFrame() {
+        // 1. 等待上一帧完成
+        vkWaitForFences(device, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
+
+        // 2. 获取交换链图像
+        uint32_t imageIndex;
+        VkResult result = vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+        if (result != VK_SUCCESS) {
+            throw std::runtime_error("无法获取交换链图像!");
+        }
+
+        // 3. 重置栅栏以供本帧使用
+        vkResetFences(device, 1, &inFlightFence);
+
+        // 4. 录制命令缓冲
+        vkResetCommandBuffer(commandBuffer, 0);
+        recordCommandBuffer(commandBuffer, imageIndex);
+
+        // 5. 提交指令给显卡
+        VkSubmitInfo submitInfo{};
+        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+        VkSemaphore waitSemaphores[] = {imageAvailableSemaphore};
+        VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+        submitInfo.waitSemaphoreCount = 1;
+        submitInfo.pWaitSemaphores = waitSemaphores;
+        submitInfo.pWaitDstStageMask = waitStages;
+
+        submitInfo.commandBufferCount = 1;
+        submitInfo.pCommandBuffers = &commandBuffer;
+
+        VkSemaphore signalSemaphores[] = {renderFinishedSemaphore};
+        submitInfo.signalSemaphoreCount = 1;
+        submitInfo.pSignalSemaphores = signalSemaphores;
+
+        if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFence) != VK_SUCCESS) {
+            throw std::runtime_error("无法提交绘制命令到队列!");
+        }
+
+        // 6. 呈现图像
+        VkPresentInfoKHR presentInfo{};
+        presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+        presentInfo.waitSemaphoreCount = 1;
+        presentInfo.pWaitSemaphores = signalSemaphores;
+
+        VkSwapchainKHR swapChains[] = {swapChain};
+        presentInfo.swapchainCount = 1;
+        presentInfo.pSwapchains = swapChains;
+        presentInfo.pImageIndices = &imageIndex;
+
+        result = vkQueuePresentKHR(graphicsQueue, &presentInfo);
+
     }
 
     // ==================================================
     // 4. 清理资源 (注意顺序：与创建顺序相反)
     // ==================================================
     void cleanup() {
+        vkDestroySemaphore(device, renderFinishedSemaphore, nullptr);
+        vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
+        vkDestroyFence(device, inFlightFence, nullptr);
+
         vkDestroyCommandPool(device, commandPool, nullptr);
         for(auto framebuffer : swapChainFramebuffers) {
             vkDestroyFramebuffer(device, framebuffer, nullptr);
