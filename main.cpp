@@ -39,6 +39,9 @@ private:
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE; // 物理显卡 (不需销毁)
     VkDevice device;                                  // 逻辑设备
     VkQueue graphicsQueue;                            // 图形队列
+    VkRenderPass renderPass;
+    VkPipelineLayout pipelineLayout;
+    VkPipeline graphicsPipeline;
     
     VkSwapchainKHR swapChain;
     std::vector<VkImage> swapChainImages;
@@ -69,6 +72,7 @@ private:
         createLogicalDevice();
         createSwapChain();
         createImageViews();
+        createRenderPass();
         createGraphicsPipeline();
     }
 
@@ -246,8 +250,49 @@ private:
         std::cout << "图像视图创建成功!" << std::endl;
     }
 
+    // --- 步骤 2.6.5： 创建渲染流程（Render Pass）---
+    void createRenderPass() {
+        //1.颜色附件描述（Attachment Description）
+        VkAttachmentDescription colorAttachment{};
+        colorAttachment.format = swapChainImageFormat; //与交换链图像格式相同
+        colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT; //不使用多重采样
+        colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR; //渲染开始前清除
+        colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE; //渲染结束后存储
+
+        colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE; //不使用模板缓冲
+        colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE; //不
+
+        colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED; //不关心初始布局
+        colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR; //呈现给屏
+
+        //2.子流程引用（Subpass Reference）
+        VkAttachmentReference colorAttachmentRef{};
+        colorAttachmentRef.attachment = 0; //引用第一个附件
+        colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL; //颜色附件布局
+
+        //3.子流程描述（Subpass Description）
+        VkSubpassDescription subpass{};
+        subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS; //图形管
+        subpass.colorAttachmentCount = 1; //一个颜色附件
+        subpass.pColorAttachments = &colorAttachmentRef; //引用颜色附件
+
+        //4.创建Render Pass
+        VkRenderPassCreateInfo renderPassInfo{};
+        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+        renderPassInfo.attachmentCount = 1; //一个附件
+        renderPassInfo.pAttachments = &colorAttachment; //附件描述
+        renderPassInfo.subpassCount = 1; //一个子流程
+        renderPassInfo.pSubpasses = &subpass; //子流程描述
+
+        if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
+            throw std::runtime_error("无法创建渲染流程!");
+        }
+        std::cout << "渲染流程创建成功!" << std::endl;
+    }
+
     // --- 步骤 2.7: 创建着色器模块 ---
     void createGraphicsPipeline(){
+        //A.加载着色器
         auto vertShaderCode = readFile("D:/0-wsy/code/VulkanLearn/shaders/vert.spv");
         auto fragShaderCode = readFile("D:/0-wsy/code/VulkanLearn/shaders/frag.spv");
 
@@ -256,6 +301,117 @@ private:
 
         VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
         VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
+
+        //B.配置着色器
+        VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
+        vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+        vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+        vertShaderStageInfo.module = vertShaderModule;
+        vertShaderStageInfo.pName = "main"; //入口函数名称
+
+        VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
+        fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+        fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+        fragShaderStageInfo.module = fragShaderModule;
+        fragShaderStageInfo.pName = "main"; //入口函数名称
+
+        VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragShaderStageInfo};
+
+        //C.顶点输入
+        VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
+        vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+        vertexInputInfo.vertexBindingDescriptionCount = 0; //无顶点数据
+        vertexInputInfo.vertexAttributeDescriptionCount = 0;
+
+        //D.输入装配
+        VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
+        inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+        inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST; //三角形列表
+        inputAssembly.primitiveRestartEnable = VK_FALSE;
+
+        //E.视口和裁剪
+        VkViewport viewport{};
+        viewport.x = 0.0f;
+        viewport.y = 0.0f;
+        viewport.width = (float) swapChainExtent.width;
+        viewport.height = (float) swapChainExtent.height;
+        viewport.minDepth = 0.0f;
+        viewport.maxDepth = 1.0f;
+
+        VkRect2D scissor{};
+        scissor.offset = {0, 0};
+        scissor.extent = swapChainExtent;
+
+        VkPipelineViewportStateCreateInfo viewportState{};
+        viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+        viewportState.viewportCount = 1;
+        viewportState.pViewports = &viewport;
+        viewportState.scissorCount = 1;
+        viewportState.pScissors = &scissor;
+
+        //F.光栅化
+        VkPipelineRasterizationStateCreateInfo rasterizer{};
+        rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+        rasterizer.depthClampEnable = VK_FALSE;
+        rasterizer.rasterizerDiscardEnable = VK_FALSE;
+        rasterizer.polygonMode = VK_POLYGON_MODE_FILL; //填充模式
+        rasterizer.lineWidth = 1.0f;
+        rasterizer.cullMode = VK_CULL_MODE_BACK_BIT; //背面剔除
+        rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE; //顺时针为正面
+        rasterizer.depthBiasEnable = VK_FALSE;
+
+        //G.多重采样 (暂时关闭)
+        VkPipelineMultisampleStateCreateInfo multisampling{};
+        multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+        multisampling.sampleShadingEnable = VK_FALSE;
+        multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+        //H.颜色混合
+        VkPipelineColorBlendAttachmentState colorBlendAttachment{};
+        colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
+                                              VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+        colorBlendAttachment.blendEnable = VK_FALSE;
+
+        VkPipelineColorBlendStateCreateInfo colorBlending{};
+        colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+        colorBlending.logicOpEnable = VK_FALSE;
+        colorBlending.attachmentCount = 1;
+        colorBlending.pAttachments = &colorBlendAttachment;
+
+        //I.管线布局
+        // 用于传递 Uniform 变量 (目前没有)
+        VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+        pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+        pipelineLayoutInfo.setLayoutCount = 0; //无描述符集
+        pipelineLayoutInfo.pushConstantRangeCount = 0; //无推送常量
+
+        if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
+            throw std::runtime_error("无法创建管线布局!");
+        }
+
+        //J.创建图形管线
+        VkGraphicsPipelineCreateInfo pipelineInfo{};
+        pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+        pipelineInfo.stageCount = 2;
+        pipelineInfo.pStages = shaderStages;
+        pipelineInfo.pVertexInputState = &vertexInputInfo;
+        pipelineInfo.pInputAssemblyState = &inputAssembly;
+        pipelineInfo.pViewportState = &viewportState;
+        pipelineInfo.pRasterizationState = &rasterizer;
+        pipelineInfo.pMultisampleState = &multisampling;
+        pipelineInfo.pDepthStencilState = nullptr; //无深度模板缓冲
+        pipelineInfo.pColorBlendState = &colorBlending;
+        pipelineInfo.pDynamicState = nullptr; //无动态状态
+
+        pipelineInfo.layout = pipelineLayout;
+        pipelineInfo.renderPass = renderPass;
+        pipelineInfo.subpass = 0;
+
+        if(vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
+            throw std::runtime_error("无法创建图形管线!");
+        }
+
+        std::cout << "图形管线创建成功!" << std::endl;
 
         vkDestroyShaderModule(device, fragShaderModule, nullptr);
         vkDestroyShaderModule(device, vertShaderModule, nullptr);
@@ -326,6 +482,9 @@ private:
     // 4. 清理资源 (注意顺序：与创建顺序相反)
     // ==================================================
     void cleanup() {
+        vkDestroyPipeline(device, graphicsPipeline, nullptr);       // 1. 销毁管线
+        vkDestroyPipelineLayout(device, pipelineLayout, nullptr);   // 2. 销毁布局
+        vkDestroyRenderPass(device, renderPass, nullptr);           // 3. 销毁 Render Pass
         for (auto imageView : swapChainImageViews) {
             vkDestroyImageView(device, imageView, nullptr);
         }
