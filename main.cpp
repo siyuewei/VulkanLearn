@@ -49,6 +49,10 @@ private:
     VkFormat swapChainImageFormat;
     VkExtent2D swapChainExtent;
 
+    std::vector<VkFramebuffer> swapChainFramebuffers; // 对应每一个交换链图像的帧缓冲
+
+    VkCommandPool commandPool;                     // 命令池
+    VkCommandBuffer commandBuffer;               // 命令缓冲
     // ==================================================
     // 2. 初始化流程 (分步骤实现)
     // ==================================================
@@ -74,6 +78,10 @@ private:
         createImageViews();
         createRenderPass();
         createGraphicsPipeline();
+
+        createFramebuffers();
+        createCommandPool();
+        createCommandBuffer();
     }
 
     // --- 步骤 2.1: 创建 Instance ---
@@ -417,6 +425,113 @@ private:
         vkDestroyShaderModule(device, vertShaderModule, nullptr);
     }
 
+    // --- 步骤 2.8：创建帧缓冲区 ---
+    void createFramebuffers() {
+        swapChainFramebuffers.resize(swapChainImageViews.size());
+
+        for (size_t i = 0; i < swapChainImageViews.size(); i++) {
+            VkImageView attachments[] = {
+                swapChainImageViews[i]
+            };
+
+            VkFramebufferCreateInfo framebufferInfo{};
+            framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+            framebufferInfo.renderPass = renderPass;
+            framebufferInfo.attachmentCount = 1;
+            framebufferInfo.pAttachments = attachments;
+            framebufferInfo.width = swapChainExtent.width;
+            framebufferInfo.height = swapChainExtent.height;
+            framebufferInfo.layers = 1;
+
+            if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
+                throw std::runtime_error("无法创建帧缓冲区!");
+            }
+        }
+        std::cout << "帧缓冲区创建成功!" << std::endl;
+    }
+
+    // --- 步骤 2.9： 创建命令池 ---
+    void createCommandPool() {
+        int queueFamilyIndex = findQueueFamilies(physicalDevice);
+
+        VkCommandPoolCreateInfo poolInfo{};
+        poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+        poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+        poolInfo.queueFamilyIndex = queueFamilyIndex;
+
+        if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
+            throw std::runtime_error("无法创建命令池!");
+        }
+        std::cout << "命令池创建成功!" << std::endl;
+    }
+
+    // --- 步骤 2.10： 创建命令缓冲 ---
+    void createCommandBuffer() {
+        VkCommandBufferAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        allocInfo.commandPool = commandPool;
+        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        allocInfo.commandBufferCount = 1;
+
+        if (vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer) != VK_SUCCESS) {
+            throw std::runtime_error("无法分配命令缓冲!");
+        }
+        std::cout << "命令缓冲创建成功!" << std::endl;
+    }
+
+    // --- 步骤 2.11：录制画画命令 ---
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+        //1.开始录制
+        VkCommandBufferBeginInfo beginInfo{};
+        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+        if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
+            throw std::runtime_error("无法开始录制命令缓冲!");
+        }
+
+        //2.启动Render Pass
+        VkRenderPassBeginInfo renderPassInfo{};
+        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        renderPassInfo.renderPass = renderPass;
+        renderPassInfo.framebuffer = swapChainFramebuffers[imageIndex];
+        renderPassInfo.renderArea.offset = {0, 0};
+        renderPassInfo.renderArea.extent = swapChainExtent;
+
+        VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
+        renderPassInfo.clearValueCount = 1;
+        renderPassInfo.pClearValues = &clearColor;
+
+        vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+        //3.绑定管线
+        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+        
+        VkViewport viewport{};
+        viewport.x = 0.0f;
+        viewport.y = 0.0f;
+        viewport.width = (float) swapChainExtent.width;
+        viewport.height = (float) swapChainExtent.height;
+        viewport.minDepth = 0.0f;
+        viewport.maxDepth = 1.0f;
+        vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+        
+        VkRect2D scissor{};
+        scissor.offset = {0, 0};
+        scissor.extent = swapChainExtent;
+        vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
+        //4.绘制三角形
+        vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+
+        //5.结束Render Pass
+        vkCmdEndRenderPass(commandBuffer);
+
+        //6.结束录制
+        if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
+            throw std::runtime_error("无法结束录制命令缓冲!");
+        }
+    }
+
     // --- 辅助函数：查找队列族 ---
     int findQueueFamilies(VkPhysicalDevice device) {
         uint32_t queueFamilyCount = 0;
@@ -482,6 +597,11 @@ private:
     // 4. 清理资源 (注意顺序：与创建顺序相反)
     // ==================================================
     void cleanup() {
+        vkDestroyCommandPool(device, commandPool, nullptr);
+        for(auto framebuffer : swapChainFramebuffers) {
+            vkDestroyFramebuffer(device, framebuffer, nullptr);
+        }
+
         vkDestroyPipeline(device, graphicsPipeline, nullptr);       // 1. 销毁管线
         vkDestroyPipelineLayout(device, pipelineLayout, nullptr);   // 2. 销毁布局
         vkDestroyRenderPass(device, renderPass, nullptr);           // 3. 销毁 Render Pass
