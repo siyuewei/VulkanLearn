@@ -31,7 +31,7 @@
 *.out
 *.app
 
-build/
-.specstory/
-.vscode/
+build/*
+.specstory/*
+.vscode/*
 .cursorindexingignore

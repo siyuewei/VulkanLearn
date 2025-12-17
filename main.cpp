@@ -9,6 +9,7 @@
 #include <iostream>
 #include <stdexcept> // 用于抛出异常
 #include <vector>
+#include <fstream>
 #include <algorithm> // 用于 std::min/max
 #include <windows.h> // 用于控制台乱码修复
 
@@ -68,6 +69,7 @@ private:
         createLogicalDevice();
         createSwapChain();
         createImageViews();
+        createGraphicsPipeline();
     }
 
     // --- 步骤 2.1: 创建 Instance ---
@@ -215,6 +217,7 @@ private:
         std::cout << "交换链创建成功! 图片数量: " << imageCount << std::endl;
     }
 
+    // --- 步骤 2.6: 创建图像视图 ---
     void createImageViews(){
         swapChainImageViews.resize(swapChainImages.size());
 
@@ -243,6 +246,21 @@ private:
         std::cout << "图像视图创建成功!" << std::endl;
     }
 
+    // --- 步骤 2.7: 创建着色器模块 ---
+    void createGraphicsPipeline(){
+        auto vertShaderCode = readFile("D:/0-wsy/code/VulkanLearn/shaders/vert.spv");
+        auto fragShaderCode = readFile("D:/0-wsy/code/VulkanLearn/shaders/frag.spv");
+
+        std::cout << "着色器代码大小: 顶点着色器 " << vertShaderCode.size() 
+                  << " 字节, 片段着色器 " << fragShaderCode.size() << " 字节." << std::endl;
+
+        VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
+        VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
+
+        vkDestroyShaderModule(device, fragShaderModule, nullptr);
+        vkDestroyShaderModule(device, vertShaderModule, nullptr);
+    }
+
     // --- 辅助函数：查找队列族 ---
     int findQueueFamilies(VkPhysicalDevice device) {
         uint32_t queueFamilyCount = 0;
@@ -261,6 +279,36 @@ private:
             }
         }
         throw std::runtime_error("找不到合适的队列族!");
+    }
+
+    // 辅助函数： 读取二进制文件
+    static std::vector<char> readFile(const std::string& filename){
+        std::ifstream file(filename, std::ios::ate | std::ios::binary);
+
+        if (!file.is_open()){
+            throw std::runtime_error("无法打开文件: " + filename);
+        }
+
+        size_t fileSize = static_cast<size_t>(file.tellg());
+        std::vector<char> buffer(fileSize);
+
+        file.seekg(0);
+        file.read(buffer.data(), fileSize);
+        file.close();
+        return buffer;
+    }
+
+    VkShaderModule createShaderModule(const std::vector<char>& code){
+        VkShaderModuleCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+        createInfo.codeSize = code.size();
+        createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+
+        VkShaderModule shaderModule;
+        if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
+            throw std::runtime_error("无法创建着色器模块!");
+        }
+        return shaderModule;
     }
 
     // ==================================================
