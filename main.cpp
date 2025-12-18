@@ -13,9 +13,55 @@
 #include <algorithm> // 用于 std::min/max
 #include <windows.h> // 用于控制台乱码修复
 
+#include <array>
+
 // 窗口大小常量
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
+
+struct Vertex
+{
+    glm::vec2 position;
+    glm::vec3 color;
+
+    //告诉Vulkan数据如何绑定
+    //类似于：有一条数据流，每隔多少字节是一个新数据
+    static VkVertexInputBindingDescription getBindingDescription()
+    {
+        VkVertexInputBindingDescription bindingDescription = {};
+        bindingDescription.binding = 0; //绑定到0号数据流
+        bindingDescription.stride = sizeof(Vertex); //每个顶点数据占用的字节数
+        bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX; //按顶点读取，每个顶点都是独立的
+        return bindingDescription;
+    }
+
+    //告诉Vulkan数据如何解析
+    //类似于：每个数据流里，每个数据的各个属性在哪里，
+    static std::array<VkVertexInputAttributeDescription, 2> getAttributeDescriptions()
+    {
+        std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions = {};
+
+        //属性0：位置（position）
+        attributeDescriptions[0].binding = 0; //来自0号数据流
+        attributeDescriptions[0].location = 0; //对应着色器中layout(location = 0)
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT; //vec2，两个32位浮点数
+        attributeDescriptions[0].offset = offsetof(Vertex, position); //在结构体中的偏移量
+
+        //属性1：颜色（color）
+        attributeDescriptions[1].binding = 0; //来自0号数据流
+        attributeDescriptions[1].location = 1; //对应着色器中layout(location = 1)
+        attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT; //vec3，三个32位浮点数
+        attributeDescriptions[1].offset = offsetof(Vertex, color); //在结构体中的偏移量
+
+        return attributeDescriptions;
+    }
+};
+
+const std::vector<Vertex> vertices ={
+    {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}}, // 底部顶点，红色
+    {{0.5f, 0.5f},  {0.0f, 1.0f, 0.0f}}, // 右上顶点，绿色
+    {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}  // 左上顶点，蓝色
+};
 
 class HelloTriangleApplication {
 public:
@@ -332,10 +378,17 @@ private:
         VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragShaderStageInfo};
 
         //C.顶点输入
+        auto bindingDescription = Vertex::getBindingDescription();
+        auto attributeDescriptions = Vertex::getAttributeDescriptions();
+        
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        vertexInputInfo.vertexBindingDescriptionCount = 0; //无顶点数据
-        vertexInputInfo.vertexAttributeDescriptionCount = 0;
+        
+        vertexInputInfo.vertexBindingDescriptionCount = 1;
+        vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+        
+        vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+        vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
         //D.输入装配
         VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
