@@ -99,6 +99,8 @@ private:
 
     VkCommandPool commandPool;                     // 命令池
     VkCommandBuffer commandBuffer;               // 命令缓冲
+    VkBuffer vertexBuffer;
+    VkDeviceMemory vertexBufferMemory;
 
     VkSemaphore imageAvailableSemaphore; // 图像可用信号量
     VkSemaphore renderFinishedSemaphore;  // 渲染完成信号量
@@ -132,6 +134,7 @@ private:
 
         createFramebuffers();
         createCommandPool();
+        createVertexBuffer();
         createCommandBuffer();
         createSyncObjects();
     }
@@ -533,6 +536,53 @@ private:
         std::cout << "命令池创建成功!" << std::endl;
     }
 
+    // --- 步骤 2.9.5： 创建顶点缓冲 ---
+    void createVertexBuffer()
+    {
+        VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+
+        //A.创建Buffer对象
+        VkBufferCreateInfo bufferInfo{};
+        bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        bufferInfo.size = bufferSize;
+        bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+        bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+        if (vkCreateBuffer(device, &bufferInfo, nullptr, &vertexBuffer) != VK_SUCCESS)
+        {
+            throw std::runtime_error("无法创建顶点缓冲区");
+        }
+
+        //B.分配显存
+        VkMemoryRequirements memRequirements;
+        vkGetBufferMemoryRequirements(device, vertexBuffer, &memRequirements);
+
+        VkMemoryAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        allocInfo.allocationSize = memRequirements.size;
+        
+        //CPU 能看见 (HOST_VISIBLE) 且 自动同步 (HOST_COHERENT)，这样写入数据后，显卡能马上看见，不想需要手动flush
+        allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+
+        if (vkAllocateMemory(device, &allocInfo, nullptr, &vertexBufferMemory) != VK_SUCCESS)
+        {
+            throw std::runtime_error("无法分配顶点缓冲区显存");
+        }
+
+        //C.绑定缓冲区与显存
+        vkBindBufferMemory(device, vertexBuffer, vertexBufferMemory, 0);
+
+        //D.写入数据
+        void* data;
+        vkMapMemory(device, vertexBufferMemory, 0, bufferSize, 0, &data);
+        memcpy(data, vertices.data(), (size_t)bufferSize);
+        vkUnmapMemory(device, vertexBufferMemory);
+
+        std::cout << "顶点缓冲区创建成功!" << std::endl;
+        
+    }
+
     // --- 步骤 2.10： 创建命令缓冲 ---
     void createCommandBuffer() {
         VkCommandBufferAllocateInfo allocInfo{};
@@ -588,9 +638,15 @@ private:
         scissor.extent = swapChainExtent;
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
+        //3.5 绑定顶点缓冲
+        VkBuffer vertexBuffers[] = {vertexBuffer};
+        VkDeviceSize offsets[] = {0};
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+        
         //4.绘制三角形
-        vkCmdDraw(commandBuffer, 3, 1, 0, 0);
-
+        // vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+        vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
+        
         //5.结束Render Pass
         vkCmdEndRenderPass(commandBuffer);
 
@@ -654,6 +710,7 @@ private:
         return buffer;
     }
 
+    //辅助函数：根据代码文件创建着色器模块
     VkShaderModule createShaderModule(const std::vector<char>& code){
         VkShaderModuleCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -665,6 +722,26 @@ private:
             throw std::runtime_error("无法创建着色器模块!");
         }
         return shaderModule;
+    }
+
+    //辅助函数：查找合适的显存类型
+    //typeFilter: 需要的显卡类型掩码
+    //properties: 需要的内存属性
+    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+    {
+        VkPhysicalDeviceMemoryProperties memoryProperties;
+        vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
+
+        for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
+        {
+            if ((typeFilter & (1 << i))                                                         //check 1: 类型掩码
+                && (memoryProperties.memoryTypes[i].propertyFlags & properties) == properties)  //check 2: 属性匹配
+            {
+                return i;
+            }
+        }
+
+        throw std::runtime_error("找不到合适的显存类型!");
     }
 
     // ==================================================
@@ -746,6 +823,9 @@ private:
         vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
         vkDestroyFence(device, inFlightFence, nullptr);
 
+        vkDestroyBuffer(device, vertexBuffer, nullptr);
+        vkFreeMemory(device, vertexBufferMemory, nullptr);
+        
         vkDestroyCommandPool(device, commandPool, nullptr);
         for(auto framebuffer : swapChainFramebuffers) {
             vkDestroyFramebuffer(device, framebuffer, nullptr);
