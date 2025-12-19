@@ -35,3 +35,4 @@ build/*
 .specstory/*
 .vscode/*
 .cursorindexingignore
+.idea/*
