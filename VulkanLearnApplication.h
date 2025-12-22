@@ -23,12 +23,15 @@
 #include <windows.h> // 用于控制台乱码修复
 #include <array>
 
+#include "VulkanUtils.h"
+
 class VulkanLearnApplication {
 public:
     void run();
 
 private:
-private:
+    uint32_t currentFrame = 0;
+
     // ==========================================
     // 1. 核心与窗口 (Core)
     // 整个程序的根基，最后销毁
@@ -67,16 +70,9 @@ private:
     // ==========================================
     VkCommandPool commandPool;     // 指令内存池
 
-    // 顶点数据
-    VkBuffer vertexBuffer;
-    VkDeviceMemory vertexBufferMemory;
-    VkBuffer indexBuffer;
-    VkDeviceMemory indexBufferMemory;
-
-    // Uniform 数据 (每一帧都有独立的一份)
-    std::vector<VkBuffer> uniformBuffers;
-    std::vector<VkDeviceMemory> uniformBuffersMemory;
-    std::vector<void*> uniformBuffersMapped;
+    VkUtils::VulkanBuffer vertexBuffer;
+    VkUtils::VulkanBuffer indexBuffer;
+    std::vector<VkUtils::VulkanBuffer> uniformBuffers;
 
     // 描述符 (将 Buffer 连接到管线的接口)
     VkDescriptorPool descriptorPool;
@@ -122,11 +118,6 @@ private:
     void updateUniformBuffer(uint32_t currentImage);
 
     int findQueueFamilies(VkPhysicalDevice device);
-    static std::vector<char> readFile(const std::string& filename);
-    VkShaderModule createShaderModule(const std::vector<char>& code);
-    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
-    void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,VkBuffer& buffer,VkDeviceMemory& bufferMemory);
-    void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
     void mainloop();
     void drawFrame();

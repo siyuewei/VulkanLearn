@@ -4,12 +4,13 @@
 
 #include "VulkanLearnApplication.h"
 
+#include "VulkanUtils.h"
+
 // 窗口大小常量
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
-uint32_t currentFrame = 0;
 
 struct Vertex
 {
@@ -140,15 +141,15 @@ void VulkanLearnApplication::cleanup() {
     vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-        vkDestroyBuffer(device,uniformBuffers[i], nullptr);
-        vkFreeMemory(device, uniformBuffersMemory[i], nullptr);
+        vkDestroyBuffer(device,uniformBuffers[i].buffer, nullptr);
+        vkFreeMemory(device, uniformBuffers[i].memory, nullptr);
     }
 
-    vkDestroyBuffer(device, indexBuffer, nullptr);
-    vkFreeMemory(device, indexBufferMemory, nullptr);
+    vkDestroyBuffer(device, indexBuffer.buffer, nullptr);
+    vkFreeMemory(device, indexBuffer.memory, nullptr);
 
-    vkDestroyBuffer(device, vertexBuffer, nullptr);
-    vkFreeMemory(device, vertexBufferMemory, nullptr);
+    vkDestroyBuffer(device, vertexBuffer.buffer, nullptr);
+    vkFreeMemory(device, vertexBuffer.memory, nullptr);
 
     vkDestroyCommandPool(device, commandPool, nullptr);
     for(auto framebuffer : swapChainFramebuffers) {
@@ -366,14 +367,14 @@ void VulkanLearnApplication::createRenderPass() {
 }
 
 void VulkanLearnApplication::createGraphicsPipeline() {
-    auto vertShaderCode = readFile("D:/0-wsy/code/VulkanLearn/shaders/vert.spv");
-    auto fragShaderCode = readFile("D:/0-wsy/code/VulkanLearn/shaders/frag.spv");
+    auto vertShaderCode = VkUtils::readFile("D:/0-wsy/code/VulkanLearn/shaders/vert.spv");
+    auto fragShaderCode = VkUtils::readFile("D:/0-wsy/code/VulkanLearn/shaders/frag.spv");
 
     std::cout << "着色器代码大小: 顶点着色器 " << vertShaderCode.size()
               << " 字节, 片段着色器 " << fragShaderCode.size() << " 字节." << std::endl;
 
-    VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
-    VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
+    VkShaderModule vertShaderModule = VkUtils::createShaderModule(device,vertShaderCode);
+    VkShaderModule fragShaderModule = VkUtils::createShaderModule(device,fragShaderCode);
 
     VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
     vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -536,25 +537,24 @@ void VulkanLearnApplication::createCommandPool() {
 void VulkanLearnApplication::createVertexBuffer() {
     VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 
-    VkBuffer stagingBuffer;
-    VkDeviceMemory stagingBufferMemory;
-    createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                 stagingBuffer, stagingBufferMemory);
+    VkUtils::VulkanBuffer stagingBuffer;
+    VkUtils::createBuffer(device,physicalDevice,bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                          stagingBuffer);
 
     void* data;
-    vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
+    vkMapMemory(device, stagingBuffer.memory, 0, bufferSize, 0, &data);
     memcpy(data, vertices.data(), (size_t)bufferSize);
-    vkUnmapMemory(device, stagingBufferMemory);
+    vkUnmapMemory(device, stagingBuffer.memory);
 
-    createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-        vertexBuffer, vertexBufferMemory);
+    VkUtils::createBuffer(device,physicalDevice,bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+                          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                          vertexBuffer);
 
-    copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
+    VkUtils::copyBuffer(device,commandPool,graphicsQueue,stagingBuffer.buffer, vertexBuffer.buffer, bufferSize);
 
-    vkDestroyBuffer(device, stagingBuffer, nullptr);
-    vkFreeMemory(device, stagingBufferMemory, nullptr);
+    vkDestroyBuffer(device, stagingBuffer.buffer, nullptr);
+    vkFreeMemory(device, stagingBuffer.memory, nullptr);
 
     std::cout << "顶点缓冲区创建成功!" << std::endl;
 }
@@ -562,25 +562,24 @@ void VulkanLearnApplication::createVertexBuffer() {
 void VulkanLearnApplication::createIndexBuffer() {
     VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
 
-    VkBuffer stagingBuffer;
-    VkDeviceMemory stagingBufferMemory;
-    createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-        stagingBuffer, stagingBufferMemory);
+    VkUtils::VulkanBuffer stagingBuffer;
+    VkUtils::createBuffer(device,physicalDevice,bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                          stagingBuffer);
 
     void* data;
-    vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
+    vkMapMemory(device, stagingBuffer.memory, 0, bufferSize, 0, &data);
     memcpy(data, indices.data(), (size_t)bufferSize);
-    vkUnmapMemory(device, stagingBufferMemory);
+    vkUnmapMemory(device, stagingBuffer.memory);
 
-    createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-        indexBuffer, indexBufferMemory);
+    VkUtils::createBuffer(device,physicalDevice,bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+                          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                          indexBuffer);
 
-    copyBuffer(stagingBuffer, indexBuffer, bufferSize);
+    VkUtils::copyBuffer(device,commandPool,graphicsQueue,stagingBuffer.buffer, indexBuffer.buffer, bufferSize);
 
-    vkDestroyBuffer(device, stagingBuffer, nullptr);
-    vkFreeMemory(device, stagingBufferMemory, nullptr);
+    vkDestroyBuffer(device, stagingBuffer.buffer, nullptr);
+    vkFreeMemory(device, stagingBuffer.memory, nullptr);
 
     std::cout << "索引缓冲区创建成功!" << std::endl;
 }
@@ -651,11 +650,11 @@ void VulkanLearnApplication::recordCommandBuffer(VkCommandBuffer commandBuffer, 
     scissor.extent = swapChainExtent;
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-    VkBuffer vertexBuffers[] = {vertexBuffer};
+    VkBuffer vertexBuffers[] = {vertexBuffer.buffer};
     VkDeviceSize offsets[] = {0};
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-    vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+    vkCmdBindIndexBuffer(commandBuffer, indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT16);
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout,0,1,&descriptorSets[currentFrame],0,nullptr);
     vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
@@ -677,7 +676,7 @@ void VulkanLearnApplication::updateUniformBuffer(uint32_t currentImage) {
     ubo.projection = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float) swapChainExtent.height, 0.1f, 10.0f);
     ubo.projection[1][1] *= -1;
 
-    memcpy(uniformBuffers[currentImage], &ubo, sizeof(UniformBufferObject));
+    memcpy(uniformBuffers[currentImage].mapped, &ubo, sizeof(UniformBufferObject));
 }
 
 void VulkanLearnApplication::createDescriptorSetLayout() {
@@ -705,17 +704,15 @@ void VulkanLearnApplication::createUniformBuffers() {
 
     //允许多少并发帧，就创建几个buffer
     uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-    uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
-    uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
 
     //创建buffer
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-        createBuffer(bufferSize,
-            VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-            uniformBuffers[i],uniformBuffersMemory[i]);
+        VkUtils::createBuffer(device,physicalDevice,bufferSize,
+                              VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                              VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                              uniformBuffers[i]);
 
-        vkMapMemory(device,uniformBuffersMemory[i],0,bufferSize,0,&uniformBuffersMapped[i]);
+        vkMapMemory(device,uniformBuffers[i].memory,0,bufferSize,0,&uniformBuffers[i].mapped);
     }
 }
 
@@ -756,7 +753,7 @@ void VulkanLearnApplication::createDescriptorSets() {
     //绑定buffer
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         VkDescriptorBufferInfo bufferInfo{};
-        bufferInfo.buffer = uniformBuffers[i];
+        bufferInfo.buffer = uniformBuffers[i].buffer;
         bufferInfo.offset = 0;
         bufferInfo.range = sizeof(UniformBufferObject);
 
@@ -791,112 +788,6 @@ int VulkanLearnApplication::findQueueFamilies(VkPhysicalDevice device) {
     throw std::runtime_error("找不到合适的队列族!");
 }
 
-std::vector<char> VulkanLearnApplication::readFile(const std::string& filename) {
-    std::ifstream file(filename, std::ios::ate | std::ios::binary);
-
-    if (!file.is_open()) {
-        throw std::runtime_error("无法打开文件: " + filename);
-    }
-
-    size_t fileSize = static_cast<size_t>(file.tellg());
-    std::vector<char> buffer(fileSize);
-
-    file.seekg(0);
-    file.read(buffer.data(), fileSize);
-    file.close();
-    return buffer;
-}
-
-VkShaderModule VulkanLearnApplication::createShaderModule(const std::vector<char>& code) {
-    VkShaderModuleCreateInfo createInfo{};
-    createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-    createInfo.codeSize = code.size();
-    createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
-
-    VkShaderModule shaderModule;
-    if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
-        throw std::runtime_error("无法创建着色器模块!");
-    }
-    return shaderModule;
-}
-
-uint32_t VulkanLearnApplication::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
-    VkPhysicalDeviceMemoryProperties memoryProperties;
-    vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
-
-    for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++) {
-        if ((typeFilter & (1 << i))
-            && (memoryProperties.memoryTypes[i].propertyFlags & properties) == properties) {
-            return i;
-        }
-    }
-
-    throw std::runtime_error("找不到合适的显存类型!");
-}
-
-void VulkanLearnApplication::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
-                                          VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
-    VkBufferCreateInfo bufferInfo{};
-    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    bufferInfo.size = size;
-    bufferInfo.usage = usage;
-    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-    if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to create buffer!");
-    }
-
-    VkMemoryRequirements memRequirements;
-    vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
-
-    VkMemoryAllocateInfo allocInfo{};
-    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    allocInfo.allocationSize = memRequirements.size;
-    allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
-
-    if (vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to allocate buffer memory!");
-    }
-
-    vkBindBufferMemory(device, buffer, bufferMemory, 0);
-}
-
-void VulkanLearnApplication::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
-    VkCommandBufferAllocateInfo allocInfo{};
-    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandPool = commandPool;
-    allocInfo.commandBufferCount = 1;
-
-    VkCommandBuffer tempCommandBuffer;
-    vkAllocateCommandBuffers(device, &allocInfo, &tempCommandBuffer);
-
-    VkCommandBufferBeginInfo beginInfo{};
-    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
-    vkBeginCommandBuffer(tempCommandBuffer, &beginInfo);
-
-    VkBufferCopy copyRegion{};
-    copyRegion.srcOffset = 0;
-    copyRegion.dstOffset = 0;
-    copyRegion.size = size;
-    vkCmdCopyBuffer(tempCommandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
-
-    vkEndCommandBuffer(tempCommandBuffer);
-
-    VkSubmitInfo submitInfo{};
-    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &tempCommandBuffer;
-
-    vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-
-    vkQueueWaitIdle(graphicsQueue);
-
-    vkFreeCommandBuffers(device, commandPool, 1, &tempCommandBuffer);
-}
-
 void VulkanLearnApplication::mainloop() {
     std::cout << "进入主循环..." << std::endl;
     while (!glfwWindowShouldClose(window)) {
@@ -908,19 +799,33 @@ void VulkanLearnApplication::mainloop() {
 }
 
 void VulkanLearnApplication::drawFrame() {
+    // 1. 等待上一轮的【当前工位】干完活
+    // (比如现在是第0帧，要等上一轮第0帧的命令执行完，才能复用资源)
     vkWaitForFences(device, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
 
+    // 2. 向交换链要一张新画纸 (imageIndex)
     uint32_t imageIndex;
-    if (vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex)!=VK_SUCCESS) {
+    VkResult result = vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+
+    if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
         throw std::runtime_error("无法获取交换链图像!");
     }
 
+    // 3. 只有确认拿到了画纸，才重置栅栏，开始干活
     vkResetFences(device, 1, &inFlightFence);
 
+    // 4. 重置指令缓冲
     vkResetCommandBuffer(commandBuffer, 0);
-    updateUniformBuffer(imageIndex);
+
+    // 5. 更新【当前工位】的数据 (UBO)
+    // 关键点：这里必须用 currentFrame！
+    updateUniformBuffer(currentFrame);
+
+    // 6. 录制指令
+    // 注意：recordCommandBuffer 内部用的是 descriptorSets[currentFrame]
     recordCommandBuffer(commandBuffer, imageIndex);
 
+    // 7. 提交命令
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
@@ -937,13 +842,14 @@ void VulkanLearnApplication::drawFrame() {
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
+    // 提交时带上 Fence，如果不干完，CPU 下次就在第1步等着
     if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFence) != VK_SUCCESS) {
-        throw std::runtime_error("无法提交绘制命令到队列!");
+        throw std::runtime_error("无法提交绘制命令!");
     }
 
+    // 8. 展示图片
     VkPresentInfoKHR presentInfo{};
     presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-
     presentInfo.waitSemaphoreCount = 1;
     presentInfo.pWaitSemaphores = signalSemaphores;
 
@@ -952,7 +858,8 @@ void VulkanLearnApplication::drawFrame() {
     presentInfo.pSwapchains = swapChains;
     presentInfo.pImageIndices = &imageIndex;
 
-    vkQueuePresentKHR(graphicsQueue, &presentInfo);
+    vkQueuePresentKHR(presentQueue, &presentInfo);
 
-    currentFrame = currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+    // 9. 工位轮转 (0 -> 1 -> 0 -> 1)
+    currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
