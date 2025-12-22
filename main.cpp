@@ -57,10 +57,18 @@ struct Vertex
     }
 };
 
-const std::vector<Vertex> vertices ={
-    {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}}, // 底部顶点，红色
-    {{0.5f, 0.5f},  {0.0f, 1.0f, 0.0f}}, // 右上顶点，绿色
-    {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}  // 左上顶点，蓝色
+const std::vector<Vertex> vertices = {
+    {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}}, // 0: 左上 (红)
+    {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},  // 1: 右上 (绿)
+    {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},   // 2: 右下 (蓝)
+    {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}    // 3: 左下 (白)
+};
+
+// 索引数组：由 2 个三角形组成，共 6 个索引
+// 0, 1, 2 是第一个三角形
+// 2, 3, 0 是第二个三角形
+const std::vector<uint16_t> indices = {
+    0, 1, 2, 2, 3, 0
 };
 
 class HelloTriangleApplication {
@@ -101,6 +109,8 @@ private:
     VkCommandBuffer commandBuffer;               // 命令缓冲
     VkBuffer vertexBuffer;
     VkDeviceMemory vertexBufferMemory;
+    VkBuffer indexBuffer;
+    VkDeviceMemory indexBufferMemory;
 
     VkSemaphore imageAvailableSemaphore; // 图像可用信号量
     VkSemaphore renderFinishedSemaphore;  // 渲染完成信号量
@@ -135,6 +145,7 @@ private:
         createFramebuffers();
         createCommandPool();
         createVertexBuffer();
+        createIndexBuffer();
         createCommandBuffer();
         createSyncObjects();
     }
@@ -541,39 +552,10 @@ private:
     {
         VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 
-        //A.创建Buffer对象
-        VkBufferCreateInfo bufferInfo{};
-        bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-        bufferInfo.size = bufferSize;
-        bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-        bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-        if (vkCreateBuffer(device, &bufferInfo, nullptr, &vertexBuffer) != VK_SUCCESS)
-        {
-            throw std::runtime_error("无法创建顶点缓冲区");
-        }
-
-        //B.分配显存
-        VkMemoryRequirements memRequirements;
-        vkGetBufferMemoryRequirements(device, vertexBuffer, &memRequirements);
-
-        VkMemoryAllocateInfo allocInfo{};
-        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-        allocInfo.allocationSize = memRequirements.size;
+        createBuffer(bufferSize,VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                     vertexBuffer, vertexBufferMemory);
         
-        //CPU 能看见 (HOST_VISIBLE) 且 自动同步 (HOST_COHERENT)，这样写入数据后，显卡能马上看见，不想需要手动flush
-        allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
-        if (vkAllocateMemory(device, &allocInfo, nullptr, &vertexBufferMemory) != VK_SUCCESS)
-        {
-            throw std::runtime_error("无法分配顶点缓冲区显存");
-        }
-
-        //C.绑定缓冲区与显存
-        vkBindBufferMemory(device, vertexBuffer, vertexBufferMemory, 0);
-
-        //D.写入数据
         void* data;
         vkMapMemory(device, vertexBufferMemory, 0, bufferSize, 0, &data);
         memcpy(data, vertices.data(), (size_t)bufferSize);
@@ -581,6 +563,23 @@ private:
 
         std::cout << "顶点缓冲区创建成功!" << std::endl;
         
+    }
+
+    // --- 步骤 2.9.7： 创建索引缓冲 ---
+    void createIndexBuffer()
+    {
+        VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+
+        createBuffer(bufferSize,VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            indexBuffer, indexBufferMemory);
+
+        void* data;
+        vkMapMemory(device, indexBufferMemory, 0, bufferSize, 0, &data);
+        memcpy(data, indices.data(), (size_t)bufferSize);
+        vkUnmapMemory(device, indexBufferMemory);
+
+        std::cout << "索引缓冲区创建成功!" << std::endl;
     }
 
     // --- 步骤 2.10： 创建命令缓冲 ---
@@ -645,7 +644,9 @@ private:
         
         //4.绘制三角形
         // vkCmdDraw(commandBuffer, 3, 1, 0, 0);
-        vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
+        // vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
+        vkCmdBindIndexBuffer(commandBuffer,indexBuffer,0,VK_INDEX_TYPE_UINT16);
+        vkCmdDrawIndexed(commandBuffer,static_cast<uint32_t>(indices.size()),1,0,0,0);
         
         //5.结束Render Pass
         vkCmdEndRenderPass(commandBuffer);
@@ -744,6 +745,41 @@ private:
         throw std::runtime_error("找不到合适的显存类型!");
     }
 
+    //根据参数创建Buffer和Memory
+    void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
+                      VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+    {
+        //A.创建Buffer对象
+        VkBufferCreateInfo bufferInfo{};
+        bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        bufferInfo.size = size;
+        bufferInfo.usage = usage;
+        bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+        if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
+        {
+            throw std::runtime_error("Failed to create buffer!");
+        }
+
+        //B.获取内存需求
+        VkMemoryRequirements memRequirements;
+        vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
+
+        //C.分配显存
+        VkMemoryAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        allocInfo.allocationSize = memRequirements.size;
+        allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
+
+        if (vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
+        {
+            throw std::runtime_error("Failed to allocate buffer memory!");
+        }
+
+        //D.绑定
+        vkBindBufferMemory(device, buffer, bufferMemory, 0);
+    }
+
     // ==================================================
     // 3. 主循环
     // ==================================================
@@ -823,6 +859,9 @@ private:
         vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
         vkDestroyFence(device, inFlightFence, nullptr);
 
+        vkDestroyBuffer(device, indexBuffer, nullptr);
+        vkFreeMemory(device, indexBufferMemory, nullptr);
+        
         vkDestroyBuffer(device, vertexBuffer, nullptr);
         vkFreeMemory(device, vertexBufferMemory, nullptr);
         
