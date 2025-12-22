@@ -55,6 +55,14 @@ private:
     VkBuffer indexBuffer;
     VkDeviceMemory indexBufferMemory;
 
+    std::vector<VkBuffer> uniformBuffers;
+    std::vector<VkDeviceMemory> uniformBuffersMemory;
+    std::vector<void*> uniformBuffersMapped;
+
+    VkDescriptorPool descriptorPool;
+
+    std::vector<VkDescriptorSet> descriptorSets;
+
     VkSemaphore imageAvailableSemaphore; // 图像可用信号量
     VkSemaphore renderFinishedSemaphore;  // 渲染完成信号量
     VkFence inFlightFence;            // 帧内同步栅栏
@@ -82,8 +90,12 @@ private:
     void createIndexBuffer();
     void createSyncObjects();
     void createDescriptorSetLayout();
+    void createUniformBuffers();
+    void createDescriptorPool();
+    void createDescriptorSets();
 
     void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+    void updateUniformBuffer(uint32_t currentImage);
 
     int findQueueFamilies(VkPhysicalDevice device);
     static std::vector<char> readFile(const std::string& filename);
@@ -96,6 +108,5 @@ private:
     void drawFrame();
 
 };
-
 
 #endif //VULKANLEARN_VULKANLEARNAPPLICATION_H
