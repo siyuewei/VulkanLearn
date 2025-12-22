@@ -4,6 +4,8 @@
 
 #include "VulkanLearnApplication.h"
 
+
+
 // 窗口大小常量
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
@@ -46,6 +48,13 @@ struct Vertex
     }
 };
 
+//Vulkan着色器需要16位对齐
+struct UniformBufferObject {
+    alignas(16) glm::mat4 projection;
+    alignas(16) glm::mat4 view;
+    alignas(16) glm::mat4 model;
+};
+
 const std::vector<Vertex> vertices = {
     {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}}, // 0: 左上 (红)
     {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},  // 1: 右上 (绿)
@@ -86,6 +95,7 @@ void VulkanLearnApplication::initVulkan() {
     createSwapChain();
     createImageViews();
     createRenderPass();
+    createDescriptorSetLayout();
     createGraphicsPipeline();
 
     createFramebuffers();
@@ -111,6 +121,8 @@ void VulkanLearnApplication::cleanup() {
     for(auto framebuffer : swapChainFramebuffers) {
         vkDestroyFramebuffer(device, framebuffer, nullptr);
     }
+
+    vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
 
     vkDestroyPipeline(device, graphicsPipeline, nullptr);       // 1. 销毁管线
     vkDestroyPipelineLayout(device, pipelineLayout, nullptr);   // 2. 销毁布局
@@ -406,7 +418,8 @@ void VulkanLearnApplication::createGraphicsPipeline() {
 
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount = 0;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
     pipelineLayoutInfo.pushConstantRangeCount = 0;
 
     if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
@@ -552,6 +565,22 @@ void VulkanLearnApplication::createCommandBuffer() {
     std::cout << "命令缓冲创建成功!" << std::endl;
 }
 
+void VulkanLearnApplication::createSyncObjects() {
+    VkSemaphoreCreateInfo semaphoreInfo{};
+    semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+    VkFenceCreateInfo fenceInfo{};
+    fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+    if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphore) != VK_SUCCESS ||
+        vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphore) != VK_SUCCESS ||
+        vkCreateFence(device, &fenceInfo, nullptr, &inFlightFence) != VK_SUCCESS) {
+        throw std::runtime_error("无法创建同步对象!");
+    }
+    std::cout << "同步对象创建成功!" << std::endl;
+}
+
 void VulkanLearnApplication::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -603,20 +632,24 @@ void VulkanLearnApplication::recordCommandBuffer(VkCommandBuffer commandBuffer, 
     }
 }
 
-void VulkanLearnApplication::createSyncObjects() {
-    VkSemaphoreCreateInfo semaphoreInfo{};
-    semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+void VulkanLearnApplication::createDescriptorSetLayout() {
+    //描述单个插座
+    VkDescriptorSetLayoutBinding uboLayoutBinding{};
+    uboLayoutBinding.binding = 0;  //绑在哪一个口上
+    uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER; //是什么类型的
+    uboLayoutBinding.descriptorCount = 1; //有几个
+    uboLayoutBinding.pImmutableSamplers = nullptr; //不可变采样器，对于一组二维数据来说并不需要，而且对于纹理来说，通常会使用运行时可变采样器
+    uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT; //只有顶点着色器要读这个ubo数据
 
-    VkFenceCreateInfo fenceInfo{};
-    fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-    fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+    //所有插座的施工图
+    VkDescriptorSetLayoutCreateInfo layoutInfo{};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = 1;
+    layoutInfo.pBindings = &uboLayoutBinding;
 
-    if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphore) != VK_SUCCESS ||
-        vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphore) != VK_SUCCESS ||
-        vkCreateFence(device, &fenceInfo, nullptr, &inFlightFence) != VK_SUCCESS) {
-        throw std::runtime_error("无法创建同步对象!");
+    if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
+        throw std::runtime_error("无法创建描述符布局");
     }
-    std::cout << "同步对象创建成功!" << std::endl;
 }
 
 int VulkanLearnApplication::findQueueFamilies(VkPhysicalDevice device) {

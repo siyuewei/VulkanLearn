@@ -5,10 +5,15 @@
 #ifndef VULKANLEARN_VULKANLEARNAPPLICATION_H
 #define VULKANLEARN_VULKANLEARNAPPLICATION_H
 
+#define GLM_FORCE_RADIANS //GLM使用弧度制
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE //深度范围0-1（OpenGL是-1到1）
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <chrono>
+
 #include <vulkan/vulkan.h>
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 
 #include <iostream>
 #include <stdexcept> // 用于抛出异常
@@ -17,8 +22,6 @@
 #include <algorithm> // 用于 std::min/max
 #include <windows.h> // 用于控制台乱码修复
 #include <array>
-
-
 
 class VulkanLearnApplication {
 public:
@@ -56,6 +59,8 @@ private:
     VkSemaphore renderFinishedSemaphore;  // 渲染完成信号量
     VkFence inFlightFence;            // 帧内同步栅栏
 
+    VkDescriptorSetLayout descriptorSetLayout; //插座的设计图
+
     void initWindow();
     void initVulkan();
     void cleanup();
@@ -75,9 +80,10 @@ private:
     void createCommandBuffer();
     void createVertexBuffer();
     void createIndexBuffer();
+    void createSyncObjects();
+    void createDescriptorSetLayout();
 
     void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
-    void createSyncObjects();
 
     int findQueueFamilies(VkPhysicalDevice device);
     static std::vector<char> readFile(const std::string& filename);
