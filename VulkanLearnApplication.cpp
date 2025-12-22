@@ -9,6 +9,7 @@ const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
+uint32_t currentFrame = 0;
 
 struct Vertex
 {
@@ -88,28 +89,49 @@ void VulkanLearnApplication::initWindow() {
 }
 
 void VulkanLearnApplication::initVulkan() {
-    createInstance();
-    createSurface();
-    pickPhysicalDevice();
-    createLogicalDevice();
-    createSwapChain();
-    createImageViews();
-    createRenderPass();
-    createDescriptorSetLayout();
-    createGraphicsPipeline();
+    // --- 1. 成立公司与采购设备 (基建部) ---
+    createInstance();           // 必须第一个，没有 Instance 就没有 Vulkan
+    createSurface();            // 必须在选显卡之前，因为要检查显卡是否支持显示到这个窗口
+    pickPhysicalDevice();       // 选显卡
+    createLogicalDevice();      // 雇佣显卡操作员 (Device 和 Queue)
 
-    //buffer
-    createUniformBuffers();
-    createDescriptorPool();
-    createDescriptorSets();
-    createFramebuffers();
-    createCommandPool();
-    createVertexBuffer();
-    createIndexBuffer();
-    createCommandBuffer();
-    createSyncObjects();
+    // --- 2. 准备画布 (物资部) ---
+    createSwapChain();          // 建立交换链
+    createImageViews();         // 给图片加相框，没这个后面 RenderPass 没法用
+
+    // --- 3. 制定规则 (设计部) ---
+    createRenderPass();         // 制定渲染流程 (RenderPass)。
+    // 必须在 Pipeline 之前，因为 Pipeline 要知道它在什么流程下工作。
+
+    createDescriptorSetLayout(); // 【关键】设计插座图纸。
+    // 必须在 createGraphicsPipeline 之前！
+    // 因为 Pipeline 需要知道：“我身上要留几个孔？”
+
+    createGraphicsPipeline();   // 制造流水线机器。
+    // 它依赖 RenderPass (流程) 和 Layout (插座)。
+
+    // --- 4. 生产配套零件 (画板部) ---
+    createFramebuffers();       // 必须在 RenderPass 和 ImageView 之后。
+    // 它把具体的“相框”和“流程”装订在一起。
+
+    // --- 5. 准备仓库与物流 (指令部) ---
+    createCommandPool();        // 建立指令池，后面分配 Buffer 和 CommandBuffer 都要用到它。
+
+    // --- 6. 进货原材料 (数据部) ---
+    // 这些 Buffer 的创建顺序无所谓，只要在录制 CommandBuffer 之前就好
+    createVertexBuffer();       // 顶点数据
+    createIndexBuffer();        // 索引数据
+    createUniformBuffers();     // 全局参数 (UBO)
+
+    // --- 7. 连接数据接口 (组装部) ---
+    createDescriptorPool();     // 建立插排仓库
+    createDescriptorSets();     // 生产插排，并把 UBO (电池) 插上去。
+    // 必须在 createUniformBuffers 之后。
+
+    // --- 8. 录制启动指令 (调度部) ---
+    createCommandBuffer();      // 分配指令缓冲 (这一步你只是分配了内存，还没录制)
+    createSyncObjects();        // 购买红绿灯和栅栏
 }
-
 void VulkanLearnApplication::cleanup() {
     vkDestroySemaphore(device, renderFinishedSemaphore, nullptr);
     vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
@@ -634,7 +656,7 @@ void VulkanLearnApplication::recordCommandBuffer(VkCommandBuffer commandBuffer, 
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
     vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
-    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout,0,1,&descriptorSets[imageIndex],0,nullptr);
+    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout,0,1,&descriptorSets[currentFrame],0,nullptr);
     vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
     vkCmdEndRenderPass(commandBuffer);
@@ -889,16 +911,14 @@ void VulkanLearnApplication::drawFrame() {
     vkWaitForFences(device, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
 
     uint32_t imageIndex;
-    VkResult result = vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
-    if (result != VK_SUCCESS) {
+    if (vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex)!=VK_SUCCESS) {
         throw std::runtime_error("无法获取交换链图像!");
     }
-
-    updateUniformBuffer(imageIndex);
 
     vkResetFences(device, 1, &inFlightFence);
 
     vkResetCommandBuffer(commandBuffer, 0);
+    updateUniformBuffer(imageIndex);
     recordCommandBuffer(commandBuffer, imageIndex);
 
     VkSubmitInfo submitInfo{};
@@ -933,4 +953,6 @@ void VulkanLearnApplication::drawFrame() {
     presentInfo.pImageIndices = &imageIndex;
 
     vkQueuePresentKHR(graphicsQueue, &presentInfo);
+
+    currentFrame = currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }

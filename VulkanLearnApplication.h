@@ -28,46 +28,70 @@ public:
     void run();
 
 private:
+private:
+    // ==========================================
+    // 1. 核心与窗口 (Core)
+    // 整个程序的根基，最后销毁
+    // ==========================================
     GLFWwindow* window;
-
     VkInstance instance;
     VkSurfaceKHR surface;
+    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+    VkDevice device;
+    VkQueue graphicsQueue;
+    VkQueue presentQueue; // 建议加上显示队列，虽然通常和图形队列是同一个
 
-    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE; // 物理显卡 (不需销毁)
-    VkDevice device;                                  // 逻辑设备
-    VkQueue graphicsQueue;                            // 图形队列
-    VkRenderPass renderPass;
-    VkPipelineLayout pipelineLayout;
-    VkPipeline graphicsPipeline;
-
+    // ==========================================
+    // 2. 交换链与画布 (Swapchain)
+    // 跟屏幕尺寸有关，窗口调整大小时需要重建的部分
+    // ==========================================
     VkSwapchainKHR swapChain;
     std::vector<VkImage> swapChainImages;
-    std::vector<VkImageView> swapChainImageViews;
     VkFormat swapChainImageFormat;
     VkExtent2D swapChainExtent;
+    std::vector<VkImageView> swapChainImageViews;
+    std::vector<VkFramebuffer> swapChainFramebuffers; // 画板
 
-    std::vector<VkFramebuffer> swapChainFramebuffers; // 对应每一个交换链图像的帧缓冲
+    // ==========================================
+    // 3. 渲染管线 (Pipeline)
+    // 定义了“怎么画”。通常不可变，要改就得重建
+    // ==========================================
+    VkRenderPass renderPass;       // 宏观流程
+    VkDescriptorSetLayout descriptorSetLayout; // 插座设计图 (新增位置)
+    VkPipelineLayout pipelineLayout; // 管线布局 (插座 + 推送常量)
+    VkPipeline graphicsPipeline;   // 具体的绘画机器
 
-    VkCommandPool commandPool;                     // 命令池
-    VkCommandBuffer commandBuffer;               // 命令缓冲
+    // ==========================================
+    // 4. 资源数据 (Resources)
+    // 顶点、索引、纹理等原材料
+    // ==========================================
+    VkCommandPool commandPool;     // 指令内存池
+
+    // 顶点数据
     VkBuffer vertexBuffer;
     VkDeviceMemory vertexBufferMemory;
     VkBuffer indexBuffer;
     VkDeviceMemory indexBufferMemory;
 
+    // Uniform 数据 (每一帧都有独立的一份)
     std::vector<VkBuffer> uniformBuffers;
     std::vector<VkDeviceMemory> uniformBuffersMemory;
     std::vector<void*> uniformBuffersMapped;
 
+    // 描述符 (将 Buffer 连接到管线的接口)
     VkDescriptorPool descriptorPool;
-
     std::vector<VkDescriptorSet> descriptorSets;
 
-    VkSemaphore imageAvailableSemaphore; // 图像可用信号量
-    VkSemaphore renderFinishedSemaphore;  // 渲染完成信号量
-    VkFence inFlightFence;            // 帧内同步栅栏
+    // ==========================================
+    // 5. 逐帧控制 (Per-Frame Objects)
+    // 用于控制渲染循环的同步与调度
+    // ==========================================
+    VkCommandBuffer commandBuffer; // 现在的写法只有一个，后面会改成数组
 
-    VkDescriptorSetLayout descriptorSetLayout; //插座的设计图
+    // 同步对象 (红绿灯/栅栏)
+    VkSemaphore imageAvailableSemaphore;
+    VkSemaphore renderFinishedSemaphore;
+    VkFence inFlightFence;
 
     void initWindow();
     void initVulkan();
