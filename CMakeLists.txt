@@ -49,7 +49,9 @@ find_package(Vulkan REQUIRED)
 # ==========================================
 # 4. 构建项目
 # ==========================================
-add_executable(VulkanLearn main.cpp)
+add_executable(VulkanLearn main.cpp
+        VulkanLearnApplication.h
+        VulkanLearnApplication.cpp)
 
 # 链接库：链接 Vulkan, GLFW 和 GLM
 target_link_libraries(VulkanLearn PRIVATE 
