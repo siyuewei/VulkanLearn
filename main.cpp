@@ -552,14 +552,32 @@ private:
     {
         VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 
-        createBuffer(bufferSize,VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        //创建临时缓冲区，用于CPU数据写入
+        //属性：TRANSFER_SRC(数据传输来源) + HOST_VISIBLE(CPU可见) + HOST_COHERENT(内存一致)
+        VkBuffer stagingBuffer;
+        VkDeviceMemory stagingBufferMemory;
+        createBuffer(bufferSize,VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                     vertexBuffer, vertexBufferMemory);
-        
+                     stagingBuffer, stagingBufferMemory);
+
+        //传入数据到临时缓冲区
         void* data;
-        vkMapMemory(device, vertexBufferMemory, 0, bufferSize, 0, &data);
+        vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
         memcpy(data, vertices.data(), (size_t)bufferSize);
-        vkUnmapMemory(device, vertexBufferMemory);
+        vkUnmapMemory(device, stagingBufferMemory);
+
+        //创建真正的顶点缓冲区
+        // 属性：TRANSFER_DST (作为传输目的地) + VERTEX_BUFFER (作为顶点缓冲)
+        // 内存：DEVICE_LOCAL (显卡专用，GPU读取最快，但是CPU无法写入)       
+        createBuffer(bufferSize,VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+            vertexBuffer, vertexBufferMemory);
+
+        copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
+
+        //销毁临时缓冲区
+        vkDestroyBuffer(device, stagingBuffer, nullptr);
+        vkFreeMemory(device, stagingBufferMemory, nullptr);
 
         std::cout << "顶点缓冲区创建成功!" << std::endl;
         
@@ -570,14 +588,25 @@ private:
     {
         VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
 
-        createBuffer(bufferSize,VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+        VkBuffer stagingBuffer;
+        VkDeviceMemory stagingBufferMemory;
+        createBuffer(bufferSize,VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-            indexBuffer, indexBufferMemory);
+            stagingBuffer, stagingBufferMemory);
 
         void* data;
-        vkMapMemory(device, indexBufferMemory, 0, bufferSize, 0, &data);
+        vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
         memcpy(data, indices.data(), (size_t)bufferSize);
-        vkUnmapMemory(device, indexBufferMemory);
+        vkUnmapMemory(device, stagingBufferMemory);
+
+        createBuffer(bufferSize,VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+            indexBuffer, indexBufferMemory);
+
+        copyBuffer(stagingBuffer, indexBuffer, bufferSize);
+
+        vkDestroyBuffer(device, stagingBuffer, nullptr);
+        vkFreeMemory(device, stagingBufferMemory, nullptr);
 
         std::cout << "索引缓冲区创建成功!" << std::endl;
     }
@@ -779,6 +808,50 @@ private:
         //D.绑定
         vkBindBufferMemory(device, buffer, bufferMemory, 0);
     }
+
+    void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+    {
+        //1.拷贝指令本身也是一个指令，需要一个临时缓冲区来存储
+        VkCommandBufferAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        allocInfo.commandPool = commandPool;
+        allocInfo.commandBufferCount = 1;
+
+        VkCommandBuffer commandBuffer;
+        vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
+
+        //2.开始录制
+        VkCommandBufferBeginInfo beginInfo{};
+        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT; //一次性使用
+
+        vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+        //3.拷贝命令
+        VkBufferCopy copyRegion{};
+        copyRegion.srcOffset = 0;
+        copyRegion.dstOffset = 0;
+        copyRegion.size = size;
+        vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
+
+        vkEndCommandBuffer(commandBuffer);
+
+        //4.提交命令，并且是立即执行
+        VkSubmitInfo submitInfo{};
+        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submitInfo.commandBufferCount = 1;
+        submitInfo.pCommandBuffers = &commandBuffer;
+
+        vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+
+        //5.等待完成
+        vkQueueWaitIdle(graphicsQueue);
+
+        //6.释放临时命令缓冲
+        vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
+    }
+    
 
     // ==================================================
     // 3. 主循环
