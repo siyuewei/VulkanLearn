@@ -82,12 +82,12 @@ private:
     // 5. 逐帧控制 (Per-Frame Objects)
     // 用于控制渲染循环的同步与调度
     // ==========================================
-    VkCommandBuffer commandBuffer; // 现在的写法只有一个，后面会改成数组
+    std::vector<VkCommandBuffer> commandBuffers;
 
     // 同步对象 (红绿灯/栅栏)
-    VkSemaphore imageAvailableSemaphore;
-    VkSemaphore renderFinishedSemaphore;
-    VkFence inFlightFence;
+    std::vector<VkSemaphore> imageAvailableSemaphores;
+    std::vector<VkSemaphore> renderFinishedSemaphores;
+    std::vector<VkFence> inFlightFences;
 
     void initWindow();
     void initVulkan();
