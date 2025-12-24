@@ -25,6 +25,16 @@
 
 #include "VulkanUtils.h"
 
+#ifdef NDEBUG
+    const bool enableValidationLayers = false;
+#else
+const bool enableValidationLayers = true;
+#endif
+
+const std::vector<const char*> validationLayers = {
+    "VK_LAYER_KHRONOS_validation"
+};
+
 class VulkanLearnApplication {
 public:
     void run();
@@ -89,6 +99,9 @@ private:
     std::vector<VkSemaphore> renderFinishedSemaphores;
     std::vector<VkFence> inFlightFences;
 
+    //6.验证层
+    VkDebugUtilsMessengerEXT debugMessenger;
+
     void initWindow();
     void initVulkan();
     void cleanup();
@@ -122,6 +135,8 @@ private:
     void mainloop();
     void drawFrame();
 
+    void setupDebugMessenger();
+    bool checkValidationLayerSupport();
 };
 
 #endif //VULKANLEARN_VULKANLEARNAPPLICATION_H
