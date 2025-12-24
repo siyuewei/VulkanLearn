@@ -44,7 +44,7 @@ const int MAX_FRAMES_IN_FLIGHT = 3;
 
 struct Vertex
 {
-    glm::vec2 position;
+    glm::vec3 position;
     glm::vec3 color;
 
     //告诉Vulkan数据如何绑定
@@ -67,7 +67,7 @@ struct Vertex
         //属性0：位置（position）
         attributeDescriptions[0].binding = 0; //来自0号数据流
         attributeDescriptions[0].location = 0; //对应着色器中layout(location = 0)
-        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT; //vec2，两个32位浮点数
+        attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
         attributeDescriptions[0].offset = offsetof(Vertex, position); //在结构体中的偏移量
 
         //属性1：颜色（color）
@@ -87,18 +87,27 @@ struct UniformBufferObject {
     alignas(16) glm::mat4 model;
 };
 
+// 8 个顶点，定义了一个中心在原点的立方体
 const std::vector<Vertex> vertices = {
-    {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}}, // 0: 左上 (红)
-    {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},  // 1: 右上 (绿)
-    {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},   // 2: 右下 (蓝)
-    {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}    // 3: 左下 (白)
+    // 位置 (x,y,z)                     // 颜色 (r,g,b)
+    {{-0.5f, -0.5f,  0.5f}, {1.0f, 0.0f, 0.0f}}, // 0: 前左下 (红)
+    {{ 0.5f, -0.5f,  0.5f}, {0.0f, 1.0f, 0.0f}}, // 1: 前右下 (绿)
+    {{ 0.5f,  0.5f,  0.5f}, {0.0f, 0.0f, 1.0f}}, // 2: 前右上 (蓝)
+    {{-0.5f,  0.5f,  0.5f}, {1.0f, 1.0f, 0.0f}}, // 3: 前左上 (黄)
+    {{-0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 1.0f}}, // 4: 后左下 (青)
+    {{ 0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 1.0f}}, // 5: 后右下 (紫)
+    {{ 0.5f,  0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}}, // 6: 后右上 (白)
+    {{-0.5f,  0.5f, -0.5f}, {0.0f, 0.0f, 0.0f}}  // 7: 后左上 (黑)
 };
 
-// 索引数组：由 2 个三角形组成，共 6 个索引
-// 0, 1, 2 是第一个三角形
-// 2, 3, 0 是第二个三角形
+// 12 个三角形 (6 个面 x 2)，注意顺序必须是逆时针 (CCW)
 const std::vector<uint16_t> indices = {
-    0, 1, 2, 2, 3, 0
+    0, 1, 2, 2, 3, 0, // 前面
+    1, 5, 6, 6, 2, 1, // 右面
+    5, 4, 7, 7, 6, 5, // 后面
+    4, 0, 3, 3, 7, 4, // 左面
+    3, 2, 6, 6, 7, 3, // 上面
+    4, 5, 1, 1, 0, 4  // 下面
 };
 
 void VulkanLearnApplication::run() {
@@ -757,7 +766,15 @@ void VulkanLearnApplication::updateUniformBuffer(uint32_t currentImage) {
     float time = std::chrono::duration<float>(currentTime - startTime).count();
 
     UniformBufferObject ubo{};
-    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::rotate(model, time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::rotate(model, time * glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    // 脉冲缩放 (呼吸效果)
+    float scale = 1.0f + 0.2f * sin(time * 2.0f);
+    model = glm::scale(model, glm::vec3(scale));
+    ubo.model = model;
+
     ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     ubo.projection = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float) swapChainExtent.height, 0.1f, 10.0f);
     ubo.projection[1][1] *= -1;
