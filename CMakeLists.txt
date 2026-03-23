@@ -51,13 +51,29 @@ find_package(Vulkan REQUIRED)
 # ==========================================
 set(VULKANLEARN_SOURCES
     main.cpp
-    VulkanLearnApplication.cpp
-    VulkanLearnApplication.h
-    VulkanUtils.cpp
-    VulkanUtils.h
+    src/vulkan/VulkanLearnApplication.cpp
+    src/vulkan/VulkanLearnApplication.h
+    src/vulkan/VulkanCommands.cpp
+    src/vulkan/VulkanCommands.h
+    src/vulkan/VulkanCore.cpp
+    src/vulkan/VulkanCore.h
+    src/vulkan/VulkanPipeline.cpp
+    src/vulkan/VulkanPipeline.h
+    src/vulkan/VulkanResources.cpp
+    src/vulkan/VulkanResources.h
+    src/vulkan/VulkanSceneData.cpp
+    src/vulkan/VulkanSceneData.h
+    src/vulkan/VulkanSwapchain.cpp
+    src/vulkan/VulkanSwapchain.h
+    src/vulkan/VulkanUtils.cpp
+    src/vulkan/VulkanUtils.h
 )
 
 add_executable(VulkanLearn ${VULKANLEARN_SOURCES})
+
+target_include_directories(VulkanLearn PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/vulkan
+)
 
 # 链接库：链接 Vulkan, GLFW 和 GLM
 target_link_libraries(VulkanLearn PRIVATE 
