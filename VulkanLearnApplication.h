@@ -5,35 +5,18 @@
 #ifndef VULKANLEARN_VULKANLEARNAPPLICATION_H
 #define VULKANLEARN_VULKANLEARNAPPLICATION_H
 
-#define GLM_FORCE_RADIANS //GLM使用弧度制
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE //深度范围0-1（OpenGL是-1到1）
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <chrono>
 
 #include <vulkan/vulkan.h>
-#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-#include <iostream>
 #include <stdexcept> // 用于抛出异常
 #include <vector>
-#include <fstream>
-#include <algorithm> // 用于 std::min/max
-#include <windows.h> // 用于控制台乱码修复
 #include <array>
 
 #include "VulkanUtils.h"
-
-#ifdef NDEBUG
-    const bool enableValidationLayers = false;
-#else
-const bool enableValidationLayers = true;
-#endif
-
-const std::vector<const char*> validationLayers = {
-    "VK_LAYER_KHRONOS_validation"
-};
 
 class VulkanLearnApplication {
 public:
@@ -130,7 +113,7 @@ private:
     void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
     void updateUniformBuffer(uint32_t currentImage);
 
-    int findQueueFamilies(VkPhysicalDevice device);
+    int findQueueFamilies(VkPhysicalDevice candidatePhysicalDevice);
 
     void mainloop();
     void drawFrame();

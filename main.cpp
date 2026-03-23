@@ -1,12 +1,4 @@
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-
 #include <iostream>
-#include <fstream>
 #include <windows.h> // 用于控制台乱码修复
 
 #include "VulkanLearnApplication.h"

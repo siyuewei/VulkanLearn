@@ -49,11 +49,15 @@ find_package(Vulkan REQUIRED)
 # ==========================================
 # 4. 构建项目
 # ==========================================
-add_executable(VulkanLearn main.cpp
-        VulkanLearnApplication.h
-        VulkanLearnApplication.cpp
-        VulkanUtils.h
-        VulkanUtils.cpp)
+set(VULKANLEARN_SOURCES
+    main.cpp
+    VulkanLearnApplication.cpp
+    VulkanLearnApplication.h
+    VulkanUtils.cpp
+    VulkanUtils.h
+)
+
+add_executable(VulkanLearn ${VULKANLEARN_SOURCES})
 
 # 链接库：链接 Vulkan, GLFW 和 GLM
 target_link_libraries(VulkanLearn PRIVATE 
@@ -61,3 +65,17 @@ target_link_libraries(VulkanLearn PRIVATE
     glfw
     glm::glm
 )
+
+# 工程级配置：把路径/宏放到编译期，避免写死本机绝对路径
+target_compile_definitions(VulkanLearn PRIVATE
+    GLM_FORCE_RADIANS
+    GLM_FORCE_DEPTH_ZERO_TO_ONE
+    GLFW_INCLUDE_VULKAN
+    SHADER_DIR="${CMAKE_CURRENT_SOURCE_DIR}/shaders"
+)
+
+if (MSVC)
+    target_compile_options(VulkanLearn PRIVATE /W4)
+else()
+    target_compile_options(VulkanLearn PRIVATE -Wall -Wextra -Wpedantic)
+endif()

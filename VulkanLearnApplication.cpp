@@ -5,6 +5,32 @@
 #include "VulkanLearnApplication.h"
 
 #include "VulkanUtils.h"
+#include <algorithm>
+
+namespace {
+
+#ifdef NDEBUG
+constexpr bool kEnableValidationLayers = false;
+#else
+constexpr bool kEnableValidationLayers = true;
+#endif
+
+const std::vector<const char*> kValidationLayers = {
+    "VK_LAYER_KHRONOS_validation",
+};
+
+const char* ShaderPath(const char* filename) {
+#ifdef SHADER_DIR
+    static const std::string base = SHADER_DIR;
+#else
+    static const std::string base = "shaders";
+#endif
+    static std::string path;
+    path = base + "/" + filename;
+    return path.c_str();
+}
+
+} // namespace
 
 VkResult CreateDebugUtilsMessengerEXT(VkInstance instance,const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,const VkAllocationCallbacks* pAllocator,VkDebugUtilsMessengerEXT* pDebugMessenger) {
     auto func = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance,"vkCreateDebugUtilsMessengerEXT");
@@ -27,6 +53,9 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     VkDebugUtilsMessageTypeFlagsEXT messageType,
     const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
     void* pUserData) {
+
+    (void)messageType;
+    (void)pUserData;
 
     //过滤普通提示信息，只看警告和错误
     if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
@@ -176,7 +205,7 @@ void VulkanLearnApplication::initVulkan() {
 void VulkanLearnApplication::cleanup() {
     vkDeviceWaitIdle(device);
 
-    for (size_t i = 0; i < swapChainImages.size(); i++) {
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
         vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
         vkDestroyFence(device, inFlightFences[i], nullptr);
@@ -211,7 +240,7 @@ void VulkanLearnApplication::cleanup() {
     vkDestroySwapchainKHR(device, swapChain, nullptr);
     vkDestroyDevice(device, nullptr);
     vkDestroySurfaceKHR(instance, surface, nullptr);
-    if (enableValidationLayers) {
+    if (kEnableValidationLayers) {
         DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
     }
     vkDestroyInstance(instance, nullptr);
@@ -222,7 +251,7 @@ void VulkanLearnApplication::cleanup() {
 }
 
 void VulkanLearnApplication::createInstance() {
-    if (enableValidationLayers && !checkValidationLayerSupport()) {
+    if (kEnableValidationLayers && !checkValidationLayerSupport()) {
         throw std::runtime_error("请求验证层，但是当前显卡驱动不支持");
     }
 
@@ -244,22 +273,22 @@ void VulkanLearnApplication::createInstance() {
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
     std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
-    if (enableValidationLayers) {
+    if (kEnableValidationLayers) {
         extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
     }
-    createInfo.enabledExtensionCount = extensions.size();
+    createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
     createInfo.ppEnabledExtensionNames = extensions.data();
 
     //配置验证层
     VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
-    if (enableValidationLayers) {
+    if (kEnableValidationLayers) {
         debugCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
         debugCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
         debugCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
         debugCreateInfo.pfnUserCallback = debugCallback;
 
-        createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-        createInfo.ppEnabledLayerNames = validationLayers.data();
+        createInfo.enabledLayerCount = static_cast<uint32_t>(kValidationLayers.size());
+        createInfo.ppEnabledLayerNames = kValidationLayers.data();
         createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*) &debugCreateInfo;
     }else {
         createInfo.enabledLayerCount = 0;
@@ -285,11 +314,11 @@ void VulkanLearnApplication::pickPhysicalDevice() {
     std::vector<VkPhysicalDevice> devices(deviceCount);
     vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
-    for (const auto& device : devices) {
+    for (const auto& candidateDevice : devices) {
         VkPhysicalDeviceProperties props;
-        vkGetPhysicalDeviceProperties(device, &props);
+        vkGetPhysicalDeviceProperties(candidateDevice, &props);
         if (props.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
-            physicalDevice = device;
+            physicalDevice = candidateDevice;
             std::cout << "已选中独立显卡: " << props.deviceName << std::endl;
             break;
         }
@@ -302,12 +331,12 @@ void VulkanLearnApplication::pickPhysicalDevice() {
 }
 
 void VulkanLearnApplication::createLogicalDevice() {
-    int indices = findQueueFamilies(physicalDevice);
+    int graphicsQueueFamilyIndex = findQueueFamilies(physicalDevice);
 
     float queuePriority = 1.0f;
     VkDeviceQueueCreateInfo queueCreateInfo{};
     queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueCreateInfo.queueFamilyIndex = indices;
+    queueCreateInfo.queueFamilyIndex = graphicsQueueFamilyIndex;
     queueCreateInfo.queueCount = 1;
     queueCreateInfo.pQueuePriorities = &queuePriority;
 
@@ -324,8 +353,8 @@ void VulkanLearnApplication::createLogicalDevice() {
         throw std::runtime_error("无法创建逻辑设备!");
     }
 
-    vkGetDeviceQueue(device, indices, 0, &graphicsQueue);
-    vkGetDeviceQueue(device, indices, 0, &presentQueue);
+    vkGetDeviceQueue(device, graphicsQueueFamilyIndex, 0, &graphicsQueue);
+    vkGetDeviceQueue(device, graphicsQueueFamilyIndex, 0, &presentQueue);
 }
 
 void VulkanLearnApplication::createSwapChain() {
@@ -334,6 +363,9 @@ void VulkanLearnApplication::createSwapChain() {
 
     uint32_t formatCount;
     vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, nullptr);
+    if (formatCount == 0) {
+        throw std::runtime_error("当前设备没有可用的交换链表面格式!");
+    }
     std::vector<VkSurfaceFormatKHR> formats(formatCount);
     vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, formats.data());
 
@@ -360,6 +392,22 @@ void VulkanLearnApplication::createSwapChain() {
         imageCount = capabilities.maxImageCount;
     }
 
+    uint32_t presentModeCount = 0;
+    vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, nullptr);
+    if (presentModeCount == 0) {
+        throw std::runtime_error("当前设备没有可用的显示模式!");
+    }
+    std::vector<VkPresentModeKHR> presentModes(presentModeCount);
+    vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, presentModes.data());
+
+    VkPresentModeKHR presentMode = VK_PRESENT_MODE_FIFO_KHR;
+    for (const auto availablePresentMode : presentModes) {
+        if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
+            presentMode = availablePresentMode;
+            break;
+        }
+    }
+
     VkSwapchainCreateInfoKHR createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
     createInfo.surface = surface;
@@ -372,8 +420,7 @@ void VulkanLearnApplication::createSwapChain() {
     createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
     createInfo.preTransform = capabilities.currentTransform;
     createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-    // createInfo.presentMode = VK_PRESENT_MODE_FIFO_KHR; //FIFO，排队等待
-    createInfo.presentMode = VK_PRESENT_MODE_MAILBOX_KHR; //三重缓冲
+    createInfo.presentMode = presentMode;
     createInfo.clipped = VK_TRUE;
 
     if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
@@ -452,8 +499,8 @@ void VulkanLearnApplication::createRenderPass() {
 }
 
 void VulkanLearnApplication::createGraphicsPipeline() {
-    auto vertShaderCode = VkUtils::readFile("D:/0-wsy/code/VulkanLearn/shaders/vert.spv");
-    auto fragShaderCode = VkUtils::readFile("D:/0-wsy/code/VulkanLearn/shaders/frag.spv");
+    auto vertShaderCode = VkUtils::readFile(ShaderPath("vert.spv"));
+    auto fragShaderCode = VkUtils::readFile(ShaderPath("frag.spv"));
 
     std::cout << "着色器代码大小: 顶点着色器 " << vertShaderCode.size()
               << " 字节, 片段着色器 " << fragShaderCode.size() << " 字节." << std::endl;
@@ -874,15 +921,15 @@ void VulkanLearnApplication::createDescriptorSets() {
     }
 }
 
-int VulkanLearnApplication::findQueueFamilies(VkPhysicalDevice device) {
+int VulkanLearnApplication::findQueueFamilies(VkPhysicalDevice candidatePhysicalDevice) {
     uint32_t queueFamilyCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+    vkGetPhysicalDeviceQueueFamilyProperties(candidatePhysicalDevice, &queueFamilyCount, nullptr);
     std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+    vkGetPhysicalDeviceQueueFamilyProperties(candidatePhysicalDevice, &queueFamilyCount, queueFamilies.data());
 
     for (int i = 0; i < queueFamilies.size(); i++) {
         VkBool32 presentSupport = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
+        vkGetPhysicalDeviceSurfaceSupportKHR(candidatePhysicalDevice, i, surface, &presentSupport);
 
         if ((queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) && presentSupport) {
             return i;
@@ -968,7 +1015,7 @@ void VulkanLearnApplication::drawFrame() {
 }
 
 void VulkanLearnApplication::setupDebugMessenger() {
-    if (!enableValidationLayers) return;
+    if (!kEnableValidationLayers) return;
 
     VkDebugUtilsMessengerCreateInfoEXT createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
@@ -988,7 +1035,7 @@ bool VulkanLearnApplication::checkValidationLayerSupport() {
     std::vector<VkLayerProperties> availableLayers(layerCount);
     vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
 
-    for (const char* layerName : validationLayers) {
+    for (const char* layerName : kValidationLayers) {
         bool layerFound = false;
 
         for (const auto& layerProperties : availableLayers) {
