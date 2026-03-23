@@ -11,6 +11,7 @@
 #include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
 
+#include "VulkanSceneData.h"
 #include "VulkanUtils.h"
 
 class VulkanLearnApplication
@@ -62,6 +63,9 @@ private:
     VkUtils::VulkanBuffer vertexBuffer;
     VkUtils::VulkanBuffer indexBuffer;
     std::vector<VkUtils::VulkanBuffer> uniformBuffers;
+    std::vector<VkSceneData::Vertex> meshVertices;
+    std::vector<uint16_t> meshIndices;
+    uint32_t activeIndexCount = 0;
 
     // 描述符 (将 Buffer 连接到管线的接口)
     VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
@@ -100,6 +104,7 @@ private:
     void createCommandBuffer();
     void createVertexBuffer();
     void createIndexBuffer();
+    void loadMeshData();
     void createSyncObjects();
     void createDescriptorSetLayout();
     void createUniformBuffers();

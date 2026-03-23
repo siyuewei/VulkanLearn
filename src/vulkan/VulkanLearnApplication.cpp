@@ -10,11 +10,13 @@
 #include "VulkanResources.h"
 #include "VulkanSceneData.h"
 #include "VulkanSwapchain.h"
+#include "ObjMeshLoader.h"
 
 #include <chrono>
 #include <cmath>
 #include <cstring>
 #include <iostream>
+#include <limits>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -43,6 +45,16 @@ namespace
         static const std::string base = "shaders";
 #endif
         return base + "/" + filename;
+    }
+
+    std::string MeshPath()
+    {
+#ifdef ASSET_DIR
+        static const std::string base = ASSET_DIR;
+#else
+        static const std::string base = "assets";
+#endif
+        return base + "/models/tumbler model/tumbler.obj";
     }
 } // namespace
 
@@ -86,6 +98,7 @@ void VulkanLearnApplication::initVulkan()
 
     createCommandPool();
 
+    loadMeshData();
     createVertexBuffer();
     createIndexBuffer();
     createUniformBuffers();
@@ -145,6 +158,9 @@ void VulkanLearnApplication::cleanup()
     swapChainImageFormat = VK_FORMAT_UNDEFINED;
     swapChainExtent = {};
     currentFrame = 0;
+    activeIndexCount = 0;
+    meshVertices.clear();
+    meshIndices.clear();
 
     if (window != nullptr)
     {
@@ -236,7 +252,7 @@ void VulkanLearnApplication::createVertexBuffer()
                                     physicalDevice,
                                     commandPool,
                                     graphicsQueue,
-                                    VkSceneData::kVertices,
+                                    meshVertices,
                                     vertexBuffer);
 }
 
@@ -246,8 +262,57 @@ void VulkanLearnApplication::createIndexBuffer()
                                    physicalDevice,
                                    commandPool,
                                    graphicsQueue,
-                                   VkSceneData::kIndices,
+                                   meshIndices,
                                    indexBuffer);
+}
+
+void VulkanLearnApplication::loadMeshData()
+{
+    const std::string meshPath = MeshPath();
+    Mesh::MeshAsset loadedMesh;
+    std::string loadError;
+
+    if (!Mesh::ObjMeshLoader::loadFromFile(meshPath, loadedMesh, loadError))
+    {
+        std::cout << "Mesh 加载失败，使用内置立方体: " << loadError << std::endl;
+        meshVertices = VkSceneData::kVertices;
+        meshIndices = VkSceneData::kIndices;
+        activeIndexCount = static_cast<uint32_t>(meshIndices.size());
+        return;
+    }
+
+    if (loadedMesh.indices.size() > std::numeric_limits<uint16_t>::max())
+    {
+        std::cout << "Mesh 索引超过 uint16 上限，使用内置立方体。" << std::endl;
+        meshVertices = VkSceneData::kVertices;
+        meshIndices = VkSceneData::kIndices;
+        activeIndexCount = static_cast<uint32_t>(meshIndices.size());
+        return;
+    }
+
+    meshVertices.clear();
+    meshIndices.clear();
+    meshVertices.reserve(loadedMesh.positions.size());
+    meshIndices.reserve(loadedMesh.indices.size());
+
+    for (size_t i = 0; i < loadedMesh.positions.size(); i++)
+    {
+        const glm::vec3 position = loadedMesh.positions[i];
+        const glm::vec3 normal = loadedMesh.hasNormals() ? loadedMesh.normals[i] : glm::vec3(0.0f, 0.0f, 1.0f);
+        const glm::vec3 color = (normal * 0.5f) + glm::vec3(0.5f);
+        meshVertices.push_back({position, color});
+    }
+
+    for (const uint32_t index : loadedMesh.indices)
+    {
+        meshIndices.push_back(static_cast<uint16_t>(index));
+    }
+
+    activeIndexCount = static_cast<uint32_t>(meshIndices.size());
+
+    std::cout << "Mesh 路径: " << meshPath << std::endl;
+    std::cout << "Mesh 加载成功: vertices=" << meshVertices.size()
+              << ", indices=" << meshIndices.size() << std::endl;
 }
 
 void VulkanLearnApplication::createCommandBuffer()
@@ -278,7 +343,7 @@ void VulkanLearnApplication::recordCommandBuffer(VkCommandBuffer commandBuffer, 
                                     indexBuffer.buffer,
                                     pipelineLayout,
                                     descriptorSets[currentFrame],
-                                    static_cast<uint32_t>(VkSceneData::kIndices.size()));
+                                    activeIndexCount);
 }
 
 void VulkanLearnApplication::updateUniformBuffer(uint32_t currentImage)

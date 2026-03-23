@@ -51,6 +51,9 @@ find_package(Vulkan REQUIRED)
 # ==========================================
 set(VULKANLEARN_SOURCES
     main.cpp
+    src/mesh/MeshAsset.h
+    src/mesh/ObjMeshLoader.cpp
+    src/mesh/ObjMeshLoader.h
     src/vulkan/VulkanLearnApplication.cpp
     src/vulkan/VulkanLearnApplication.h
     src/vulkan/VulkanCommands.cpp
@@ -72,6 +75,7 @@ set(VULKANLEARN_SOURCES
 add_executable(VulkanLearn ${VULKANLEARN_SOURCES})
 
 target_include_directories(VulkanLearn PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/mesh
     ${CMAKE_CURRENT_SOURCE_DIR}/src/vulkan
 )
 
@@ -87,6 +91,7 @@ target_compile_definitions(VulkanLearn PRIVATE
     GLM_FORCE_RADIANS
     GLM_FORCE_DEPTH_ZERO_TO_ONE
     GLFW_INCLUDE_VULKAN
+    ASSET_DIR="${CMAKE_CURRENT_SOURCE_DIR}/assets"
     SHADER_DIR="${CMAKE_CURRENT_SOURCE_DIR}/shaders"
 )
 
