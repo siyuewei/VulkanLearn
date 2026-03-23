@@ -18,7 +18,8 @@
 
 #include "VulkanUtils.h"
 
-class VulkanLearnApplication {
+class VulkanLearnApplication
+{
 public:
     void run();
 
@@ -29,7 +30,7 @@ private:
     // 1. 核心与窗口 (Core)
     // 整个程序的根基，最后销毁
     // ==========================================
-    GLFWwindow* window;
+    GLFWwindow *window;
     VkInstance instance;
     VkSurfaceKHR surface;
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -52,16 +53,16 @@ private:
     // 3. 渲染管线 (Pipeline)
     // 定义了“怎么画”。通常不可变，要改就得重建
     // ==========================================
-    VkRenderPass renderPass;       // 宏观流程
+    VkRenderPass renderPass;                   // 宏观流程
     VkDescriptorSetLayout descriptorSetLayout; // 插座设计图 (新增位置)
-    VkPipelineLayout pipelineLayout; // 管线布局 (插座 + 推送常量)
-    VkPipeline graphicsPipeline;   // 具体的绘画机器
+    VkPipelineLayout pipelineLayout;           // 管线布局 (插座 + 推送常量)
+    VkPipeline graphicsPipeline;               // 具体的绘画机器
 
     // ==========================================
     // 4. 资源数据 (Resources)
     // 顶点、索引、纹理等原材料
     // ==========================================
-    VkCommandPool commandPool;     // 指令内存池
+    VkCommandPool commandPool; // 指令内存池
 
     VkUtils::VulkanBuffer vertexBuffer;
     VkUtils::VulkanBuffer indexBuffer;
@@ -82,7 +83,7 @@ private:
     std::vector<VkSemaphore> renderFinishedSemaphores;
     std::vector<VkFence> inFlightFences;
 
-    //6.验证层
+    // 6.验证层
     VkDebugUtilsMessengerEXT debugMessenger;
 
     void initWindow();
@@ -122,4 +123,4 @@ private:
     bool checkValidationLayerSupport();
 };
 
-#endif //VULKANLEARN_VULKANLEARNAPPLICATION_H
+#endif // VULKANLEARN_VULKANLEARNAPPLICATION_H

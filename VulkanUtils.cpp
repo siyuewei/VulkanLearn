@@ -1,12 +1,14 @@
 #include "VulkanUtils.h"
 
-namespace VkUtils {
+namespace VkUtils
+{
 
-
-    std::vector<char> readFile(const std::string& filename) {
+    std::vector<char> readFile(const std::string &filename)
+    {
         std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
-        if (!file.is_open()) {
+        if (!file.is_open())
+        {
             throw std::runtime_error("无法打开文件: " + filename);
         }
 
@@ -20,12 +22,15 @@ namespace VkUtils {
         return buffer;
     }
 
-    uint32_t findMemoryType(VkPhysicalDevice physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties) {
+    uint32_t findMemoryType(VkPhysicalDevice physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties)
+    {
         VkPhysicalDeviceMemoryProperties memoryProperties;
         vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
 
-        for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++) {
-            if ((typeFilter & (1 << i)) && (memoryProperties.memoryTypes[i].propertyFlags & properties) == properties) {
+        for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
+        {
+            if ((typeFilter & (1 << i)) && (memoryProperties.memoryTypes[i].propertyFlags & properties) == properties)
+            {
                 return i;
             }
         }
@@ -33,17 +38,19 @@ namespace VkUtils {
         throw std::runtime_error("找不到合适的显存类型!");
     }
 
-    void createBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize size, 
-                      VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, 
-                      VulkanBuffer& outbuffer) {
-        
+    void createBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize size,
+                      VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
+                      VulkanBuffer &outbuffer)
+    {
+
         VkBufferCreateInfo bufferInfo{};
         bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
         bufferInfo.size = size;
         bufferInfo.usage = usage;
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-        if (vkCreateBuffer(device, &bufferInfo, nullptr, &outbuffer.buffer) != VK_SUCCESS) {
+        if (vkCreateBuffer(device, &bufferInfo, nullptr, &outbuffer.buffer) != VK_SUCCESS)
+        {
             throw std::runtime_error("无法创建 Buffer!");
         }
 
@@ -56,7 +63,8 @@ namespace VkUtils {
         // 注意：这里调用了本文件内部的 helper
         allocInfo.memoryTypeIndex = findMemoryType(physicalDevice, memRequirements.memoryTypeBits, properties);
 
-        if (vkAllocateMemory(device, &allocInfo, nullptr, &outbuffer.memory) != VK_SUCCESS) {
+        if (vkAllocateMemory(device, &allocInfo, nullptr, &outbuffer.memory) != VK_SUCCESS)
+        {
             throw std::runtime_error("无法分配 Buffer 显存!");
         }
 
@@ -66,7 +74,8 @@ namespace VkUtils {
         outbuffer.mapped = nullptr;
     }
 
-    VkCommandBuffer beginSingleTimeCommands(VkDevice device, VkCommandPool commandPool) {
+    VkCommandBuffer beginSingleTimeCommands(VkDevice device, VkCommandPool commandPool)
+    {
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -85,7 +94,8 @@ namespace VkUtils {
         return commandBuffer;
     }
 
-    void endSingleTimeCommands(VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue, VkCommandBuffer commandBuffer) {
+    void endSingleTimeCommands(VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue, VkCommandBuffer commandBuffer)
+    {
         vkEndCommandBuffer(commandBuffer);
 
         VkSubmitInfo submitInfo{};
@@ -99,9 +109,10 @@ namespace VkUtils {
         vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
     }
 
-    void copyBuffer(VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue, 
-                    VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
-        
+    void copyBuffer(VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue,
+                    VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+    {
+
         // 使用上面的 Helper 开启命令
         VkCommandBuffer commandBuffer = beginSingleTimeCommands(device, commandPool);
 
@@ -115,14 +126,16 @@ namespace VkUtils {
         endSingleTimeCommands(device, commandPool, graphicsQueue, commandBuffer);
     }
 
-    VkShaderModule createShaderModule(VkDevice device, const std::vector<char>& code) {
+    VkShaderModule createShaderModule(VkDevice device, const std::vector<char> &code)
+    {
         VkShaderModuleCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
         createInfo.codeSize = code.size();
-        createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+        createInfo.pCode = reinterpret_cast<const uint32_t *>(code.data());
 
         VkShaderModule shaderModule;
-        if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
+        if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS)
+        {
             throw std::runtime_error("无法创建着色器模块!");
         }
         return shaderModule;
